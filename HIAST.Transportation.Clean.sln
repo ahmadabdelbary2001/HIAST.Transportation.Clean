@@ -1,8 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F9A7486C-FFBE-4578-98B8-4BAB8F11F8A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{C1577136-9C2F-4021-885F-5F0552E08403}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{5E28B0D1-14C3-48AA-96F3-4F7058EB50D2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{5446EEA4-C45A-4529-A875-C240FAF91CF9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{C4E38529-8233-4D4E-87E9-A6B811197920}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5E28B0D1-14C3-48AA-96F3-4F7058EB50D2} = {F9A7486C-FFBE-4578-98B8-4BAB8F11F8A8}
+		{5446EEA4-C45A-4529-A875-C240FAF91CF9} = {F9A7486C-FFBE-4578-98B8-4BAB8F11F8A8}
+		{C4E38529-8233-4D4E-87E9-A6B811197920} = {F9A7486C-FFBE-4578-98B8-4BAB8F11F8A8}
 	EndGlobalSection
 EndGlobal
