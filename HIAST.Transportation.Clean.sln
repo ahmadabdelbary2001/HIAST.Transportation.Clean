@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HIAST.Transportation.Domain", "HIAST.Transportation.Domain\HIAST.Transportation.Domain.csproj", "{C0A5FC0B-60BB-411B-9387-D5131B81AF98}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HIAST.Transportation.Application", "HIAST.Transportation.Application\HIAST.Transportation.Application.csproj", "{9C115B22-A864-44B4-A8A6-26BEABF9704C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,11 +24,16 @@ Global
 		{5446EEA4-C45A-4529-A875-C240FAF91CF9} = {F9A7486C-FFBE-4578-98B8-4BAB8F11F8A8}
 		{C4E38529-8233-4D4E-87E9-A6B811197920} = {F9A7486C-FFBE-4578-98B8-4BAB8F11F8A8}
 		{C0A5FC0B-60BB-411B-9387-D5131B81AF98} = {5446EEA4-C45A-4529-A875-C240FAF91CF9}
+		{9C115B22-A864-44B4-A8A6-26BEABF9704C} = {5446EEA4-C45A-4529-A875-C240FAF91CF9}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{C0A5FC0B-60BB-411B-9387-D5131B81AF98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C0A5FC0B-60BB-411B-9387-D5131B81AF98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0A5FC0B-60BB-411B-9387-D5131B81AF98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0A5FC0B-60BB-411B-9387-D5131B81AF98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C115B22-A864-44B4-A8A6-26BEABF9704C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C115B22-A864-44B4-A8A6-26BEABF9704C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C115B22-A864-44B4-A8A6-26BEABF9704C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C115B22-A864-44B4-A8A6-26BEABF9704C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
