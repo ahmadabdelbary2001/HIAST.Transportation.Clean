@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\HIAST.Transportation.Domain\HIAST.Transportation.Domain.csproj" />
+    </ItemGroup>
+    
 </Project>
