@@ -10,10 +10,10 @@ public class LineProfile : Profile
     {
         // Maps for reading data, including the nested Supervisor name.
         CreateMap<Line, LineDto>()
-            .ForMember(dest => dest.SupervisorName, opt => opt.MapFrom(src => src.Supervisor.Name));
+            .ForMember(dest => dest.SupervisorName, opt => opt.MapFrom(src => src.Supervisor != null ? src.Supervisor.Name : string.Empty));
             
         CreateMap<Line, LineListDto>()
-            .ForMember(dest => dest.SupervisorName, opt => opt.MapFrom(src => src.Supervisor.Name));
+            .ForMember(dest => dest.SupervisorName, opt => opt.MapFrom(src => src.Supervisor != null ? src.Supervisor.Name : string.Empty));
 
         // Maps for writing data.
         CreateMap<CreateLineDto, Line>();
