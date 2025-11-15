@@ -9,7 +9,7 @@ public class DriverProfile : Profile
     public DriverProfile()
     {
         CreateMap<Driver, DriverDto>().ReverseMap();
-        CreateMap<Driver, DriverDto>().ReverseMap();
+        CreateMap<Driver, DriverListDto>().ReverseMap();
         CreateMap<CreateDriverDto, Driver>();
         CreateMap<UpdateDriverDto, Driver>();
     }
