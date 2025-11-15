@@ -9,5 +9,10 @@
     <ItemGroup>
         <ProjectReference Include="..\HIAST.Transportation.Domain\HIAST.Transportation.Domain.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FluentValidation" Version="12.0.0" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+    </ItemGroup>
     
 </Project>
