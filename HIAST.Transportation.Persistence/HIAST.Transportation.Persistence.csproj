@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\HIAST.Transportation.Application\HIAST.Transportation.Application.csproj" />
       <ProjectReference Include="..\HIAST.Transportation.Domain\HIAST.Transportation.Domain.csproj" />
     </ItemGroup>
 

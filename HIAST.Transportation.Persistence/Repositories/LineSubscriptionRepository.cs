@@ -1,0 +1,41 @@
+using HIAST.Transportation.Application.Contracts.Persistence;
+using HIAST.Transportation.Domain.Entities;
+using HIAST.Transportation.Persistence.DatabaseContext;
+using Microsoft.EntityFrameworkCore;
+
+namespace HIAST.Transportation.Persistence.Repositories;
+
+public class LineSubscriptionRepository : GenericRepository<LineSubscription>, ILineSubscriptionRepository
+{
+    public LineSubscriptionRepository(TransportationDbContext context) : base(context)
+    {
+    }
+
+    public async Task<IReadOnlyList<LineSubscription>> GetSubscriptionsByEmployeeIdAsync(int employeeId)
+    {
+        return await _context.LineSubscriptions
+            .Where(ls => ls.EmployeeId == employeeId)
+            .Include(ls => ls.Employee)
+            .Include(ls => ls.Line)
+            .ToListAsync();
+    }
+
+    public async Task<IReadOnlyList<LineSubscription>> GetSubscriptionsByLineIdAsync(int lineId)
+    {
+        return await _context.LineSubscriptions
+            .Where(ls => ls.LineId == lineId)
+            .Include(ls => ls.Employee)
+            .Include(ls => ls.Line)
+            .ToListAsync();
+    }
+
+    public async Task<IReadOnlyList<LineSubscription>> GetActiveSubscriptionsAsync()
+    {
+        var currentDate = DateTime.UtcNow;
+        return await _context.LineSubscriptions
+            .Where(ls => ls.StartDate <= currentDate && (ls.EndDate == null || ls.EndDate >= currentDate))
+            .Include(ls => ls.Employee)
+            .Include(ls => ls.Line)
+            .ToListAsync();
+    }
+}
