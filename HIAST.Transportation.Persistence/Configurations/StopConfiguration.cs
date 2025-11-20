@@ -10,31 +10,25 @@ public class StopConfiguration : IEntityTypeConfiguration<Stop>
     {
         builder.HasKey(s => s.Id);
 
-        builder.Property(s => s.Name)
-            .IsRequired()
-            .HasMaxLength(200);
-
-        builder.Property(s => s.Latitude)
-            .IsRequired()
-            .HasPrecision(10, 7);
-
-        builder.Property(s => s.Longitude)
-            .IsRequired()
-            .HasPrecision(10, 7);
-
         builder.Property(s => s.Address)
             .IsRequired()
             .HasMaxLength(500);
 
-        // Indexes
-        builder.HasIndex(s => s.Name);
+        builder.Property(s => s.LineId)
+            .IsRequired();
 
-        builder.HasIndex(s => new { s.Latitude, s.Longitude });
+        builder.Property(s => s.SequenceOrder)
+            .IsRequired();
+
+        // Indexes
+        builder.HasIndex(s => s.LineId);
+        builder.HasIndex(s => new { s.LineId, s.SequenceOrder })
+            .IsUnique();
 
         // Relationships
-        builder.HasMany(s => s.LineStops)
-            .WithOne(ls => ls.Stop)
-            .HasForeignKey(ls => ls.StopId)
+        builder.HasOne(s => s.Line)
+            .WithMany(l => l.Stops)
+            .HasForeignKey(s => s.LineId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -14,7 +14,7 @@ public class SupervisorRepository : GenericRepository<Supervisor>, ISupervisorRe
     public async Task<IReadOnlyList<Supervisor>> GetSupervisorsWithLinesAsync()
     {
         return await _context.Supervisors
-            .Include(s => s.ManagedLines)
+            .Include(s => s.Lines)
             .ToListAsync();
     }
 }

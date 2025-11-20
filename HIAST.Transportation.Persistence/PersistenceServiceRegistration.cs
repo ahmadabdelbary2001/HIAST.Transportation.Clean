@@ -27,8 +27,6 @@ public static class PersistenceServiceRegistration
         services.AddScoped<IBusRepository, BusRepository>();
         services.AddScoped<IStopRepository, StopRepository>();
         services.AddScoped<ILineRepository, LineRepository>();
-        services.AddScoped<ILineStopRepository, LineStopRepository>();
-        services.AddScoped<ITripRepository, TripRepository>();
         services.AddScoped<ILineSubscriptionRepository, LineSubscriptionRepository>();
 
         // Register Unit of Work

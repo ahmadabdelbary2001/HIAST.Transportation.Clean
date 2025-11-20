@@ -16,11 +16,4 @@ public class DriverRepository : GenericRepository<Driver>, IDriverRepository
         return await _context.Drivers
             .FirstOrDefaultAsync(d => d.LicenseNumber == licenseNumber);
     }
-
-    public async Task<IReadOnlyList<Driver>> GetDriversWithExpiringLicensesAsync(DateTime beforeDate)
-    {
-        return await _context.Drivers
-            .Where(d => d.LicenseExpiryDate <= beforeDate)
-            .ToListAsync();
-    }
 }

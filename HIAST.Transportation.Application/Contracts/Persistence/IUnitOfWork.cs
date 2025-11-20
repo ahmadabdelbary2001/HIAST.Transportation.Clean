@@ -10,8 +10,6 @@ public interface IUnitOfWork : IDisposable
     IBusRepository BusRepository { get; }
     IStopRepository StopRepository { get; }
     ILineRepository LineRepository { get; }
-    ILineStopRepository LineStopRepository { get; }
-    ITripRepository TripRepository { get; }
     ILineSubscriptionRepository LineSubscriptionRepository { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken =  default);

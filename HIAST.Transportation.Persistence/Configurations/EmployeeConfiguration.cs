@@ -10,45 +10,28 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
     {
         builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.EmployeeNumber)
-            .IsRequired()
-            .HasMaxLength(50);
-
-        builder.Property(e => e.FirstName)
-            .IsRequired()
-            .HasMaxLength(100);
-
-        builder.Property(e => e.LastName)
-            .IsRequired()
-            .HasMaxLength(100);
-
-        builder.Property(e => e.Email)
+        builder.Property(e => e.Name)
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(e => e.PhoneNumber)
+        builder.Property(e => e.EmployeeId)
             .IsRequired()
-            .HasMaxLength(20);
+            .HasMaxLength(50);
 
         builder.Property(e => e.Department)
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Property(e => e.IsActive)
+        builder.Property(e => e.ContactInfo)
             .IsRequired()
-            .HasDefaultValue(true);
+            .HasMaxLength(200);
 
         // Indexes
-        builder.HasIndex(e => e.EmployeeNumber)
+        builder.HasIndex(e => e.EmployeeId)
             .IsUnique();
-
-        builder.HasIndex(e => e.Email)
-            .IsUnique();
-
-        builder.HasIndex(e => e.IsActive);
 
         // Relationships
-        builder.HasMany(e => e.Subscriptions)
+        builder.HasMany(e => e.LineSubscriptions)
             .WithOne(ls => ls.Employee)
             .HasForeignKey(ls => ls.EmployeeId)
             .OnDelete(DeleteBehavior.Cascade);

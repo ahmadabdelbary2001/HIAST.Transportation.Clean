@@ -16,15 +16,18 @@ public class LineRepository : GenericRepository<Line>, ILineRepository
         return await _context.Lines
             .Where(l => l.SupervisorId == supervisorId)
             .Include(l => l.Supervisor)
+            .Include(l => l.Bus)
+            .Include(l => l.Driver)
             .ToListAsync();
     }
 
     public async Task<Line?> GetLineWithStopsAsync(int lineId)
     {
         return await _context.Lines
-            .Include(l => l.LineStops)
-            .ThenInclude(ls => ls.Stop)
+            .Include(l => l.Stops.OrderBy(s => s.SequenceOrder))
             .Include(l => l.Supervisor)
+            .Include(l => l.Bus)
+            .Include(l => l.Driver)
             .FirstOrDefaultAsync(l => l.Id == lineId);
     }
 }

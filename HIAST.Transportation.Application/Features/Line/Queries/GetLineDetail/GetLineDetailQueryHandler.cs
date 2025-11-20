@@ -19,7 +19,7 @@ public class GetLineDetailQueryHandler : IRequestHandler<GetLineDetailQuery, Lin
 
     public async Task<LineDto> Handle(GetLineDetailQuery request, CancellationToken cancellationToken)
     {
-        var line = await _unitOfWork.LineRepository.GetByIdAsync(request.Id);
+        var line = await _unitOfWork.LineRepository.GetLineWithStopsAsync(request.Id);
         if (line == null)
             throw new NotFoundException(nameof(Domain.Entities.Line), request.Id);
 

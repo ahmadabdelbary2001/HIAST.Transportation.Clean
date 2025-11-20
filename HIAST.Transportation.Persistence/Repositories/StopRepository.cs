@@ -13,10 +13,9 @@ public class StopRepository : GenericRepository<Stop>, IStopRepository
 
     public async Task<IReadOnlyList<Stop>> GetStopsByLineIdAsync(int lineId)
     {
-        return await _context.LineStops
-            .Where(ls => ls.LineId == lineId)
-            .OrderBy(ls => ls.SequenceOrder)
-            .Select(ls => ls.Stop)
+        return await _context.Stops
+            .Where(s => s.LineId == lineId)
+            .OrderBy(s => s.SequenceOrder)
             .ToListAsync();
     }
 }

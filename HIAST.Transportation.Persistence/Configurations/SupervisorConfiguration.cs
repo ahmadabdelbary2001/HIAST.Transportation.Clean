@@ -25,12 +25,12 @@ public class SupervisorConfiguration : IEntityTypeConfiguration<Supervisor>
         builder.HasIndex(s => s.EmployeeId);
 
         // Relationships
-        builder.HasOne(s => s.Employee)
+        builder.HasOne(s => s.EmployeeId)
             .WithMany()
             .HasForeignKey(s => s.EmployeeId)
             .OnDelete(DeleteBehavior.SetNull);
 
-        builder.HasMany(s => s.ManagedLines)
+        builder.HasMany(s => s.Lines)
             .WithOne(l => l.Supervisor)
             .HasForeignKey(l => l.SupervisorId)
             .OnDelete(DeleteBehavior.Restrict);

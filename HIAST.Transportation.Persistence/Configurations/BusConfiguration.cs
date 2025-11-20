@@ -29,9 +29,9 @@ public class BusConfiguration : IEntityTypeConfiguration<Bus>
         builder.HasIndex(b => b.Status);
 
         // Relationships
-        builder.HasMany(b => b.Trips)
-            .WithOne(t => t.Bus)
-            .HasForeignKey(t => t.BusId)
+        builder.HasMany(b => b.Lines)
+            .WithOne(l => l.Bus)
+            .HasForeignKey(l => l.BusId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

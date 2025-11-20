@@ -7,8 +7,8 @@ public class Bus : AuditableEntity
 {
     public string LicensePlate { get; set; } = string.Empty;
     public int Capacity { get; set; }
-    public BusStatus Status { get; set; } = BusStatus.Available;
+    public BusStatus Status { get; set; }
 
-    // Navigation Properties
-    public ICollection<Trip> Trips { get; set; } = new List<Trip>();
+    // Navigation properties
+    public ICollection<Line> Lines { get; set; } = new List<Line>();
 }

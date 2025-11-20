@@ -18,9 +18,6 @@ public class DriverConfiguration : IEntityTypeConfiguration<Driver>
             .IsRequired()
             .HasMaxLength(50);
 
-        builder.Property(d => d.LicenseExpiryDate)
-            .IsRequired();
-
         builder.Property(d => d.ContactInfo)
             .IsRequired()
             .HasMaxLength(200);
@@ -29,12 +26,10 @@ public class DriverConfiguration : IEntityTypeConfiguration<Driver>
         builder.HasIndex(d => d.LicenseNumber)
             .IsUnique();
 
-        builder.HasIndex(d => d.LicenseExpiryDate);
-
         // Relationships
-        builder.HasMany(d => d.Trips)
-            .WithOne(t => t.Driver)
-            .HasForeignKey(t => t.DriverId)
+        builder.HasMany(d => d.Lines)
+            .WithOne(l => l.Driver)
+            .HasForeignKey(l => l.DriverId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

@@ -4,11 +4,10 @@ namespace HIAST.Transportation.Domain.Entities;
 
 public class Stop : AuditableEntity
 {
-    public string Name { get; set; } = string.Empty;
-    public decimal? Latitude { get; set; }
-    public decimal? Longitude { get; set; }
-    public string? Address { get; set; }
+    public int LineId { get; set; }
+    public string Address { get; set; } = string.Empty;
+    public int SequenceOrder { get; set; }
 
-    // Navigation Properties
-    public ICollection<LineStop> LineStops { get; set; } = new List<LineStop>();
+    // Navigation property
+    public Line Line { get; set; } = null!;
 }

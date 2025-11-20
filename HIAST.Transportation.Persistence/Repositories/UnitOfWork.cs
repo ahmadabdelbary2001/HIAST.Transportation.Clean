@@ -12,8 +12,6 @@ public class UnitOfWork : IUnitOfWork
     private IBusRepository? _busRepository;
     private IStopRepository? _stopRepository;
     private ILineRepository? _lineRepository;
-    private ILineStopRepository? _lineStopRepository;
-    private ITripRepository? _tripRepository;
     private ILineSubscriptionRepository? _lineSubscriptionRepository;
 
     public UnitOfWork(TransportationDbContext context)
@@ -38,13 +36,7 @@ public class UnitOfWork : IUnitOfWork
 
     public ILineRepository LineRepository => 
         _lineRepository ??= new LineRepository(_context);
-
-    public ILineStopRepository LineStopRepository => 
-        _lineStopRepository ??= new LineStopRepository(_context);
-
-    public ITripRepository TripRepository => 
-        _tripRepository ??= new TripRepository(_context);
-
+    
     public ILineSubscriptionRepository LineSubscriptionRepository => 
         _lineSubscriptionRepository ??= new LineSubscriptionRepository(_context);
 

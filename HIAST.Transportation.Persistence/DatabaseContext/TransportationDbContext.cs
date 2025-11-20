@@ -16,8 +16,6 @@ public class TransportationDbContext : DbContext
     public DbSet<Bus> Buses => Set<Bus>();
     public DbSet<Stop> Stops => Set<Stop>();
     public DbSet<Line> Lines => Set<Line>();
-    public DbSet<LineStop> LineStops => Set<LineStop>();
-    public DbSet<Trip> Trips => Set<Trip>();
     public DbSet<LineSubscription> LineSubscriptions => Set<LineSubscription>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

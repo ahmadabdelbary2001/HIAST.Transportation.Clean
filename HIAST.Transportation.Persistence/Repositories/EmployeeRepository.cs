@@ -11,17 +11,10 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
     {
     }
 
-    public async Task<Employee?> GetByEmployeeNumberAsync(string employeeNumber)
+    public async Task<Employee?> GetByEmployeeIdAsync(string employeeId)
     {
         return await _context.Employees
-            .FirstOrDefaultAsync(e => e.EmployeeNumber == employeeNumber);
-    }
-
-    public async Task<IReadOnlyList<Employee>> GetActiveEmployeesAsync()
-    {
-        return await _context.Employees
-            .Where(e => e.IsActive)
-            .ToListAsync();
+            .FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
     }
 
     public async Task<IReadOnlyList<Employee>> GetEmployeesByDepartmentAsync(string department)

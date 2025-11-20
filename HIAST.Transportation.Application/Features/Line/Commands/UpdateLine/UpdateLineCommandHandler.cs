@@ -30,7 +30,6 @@ public class UpdateLineCommandHandler : IRequestHandler<UpdateLineCommand, Unit>
             throw new NotFoundException(nameof(Domain.Entities.Line), request.LineDto.Id);
 
         _mapper.Map(request.LineDto, line);
-        
         await _unitOfWork.LineRepository.UpdateAsync(line);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
