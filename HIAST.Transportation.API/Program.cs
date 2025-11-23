@@ -1,4 +1,13 @@
+using HIAST.Transportation.Application;
+using HIAST.Transportation.Infrastructure;
+using HIAST.Transportation.Persistence;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Register services from other projects
+builder.Services.AddApplicationServices();
+builder.Services.AddPersistenceServices(builder.Configuration);
+builder.Services.AddInfrastructureServices();
 
 // Add services to the container.
 

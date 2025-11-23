@@ -7,7 +7,17 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\HIAST.Transportation.Application\HIAST.Transportation.Application.csproj" />
+        <ProjectReference Include="..\HIAST.Transportation.Infrastructure\HIAST.Transportation.Infrastructure.csproj" />
+        <ProjectReference Include="..\HIAST.Transportation.Persistence\HIAST.Transportation.Persistence.csproj" />
     </ItemGroup>
 
 </Project>
