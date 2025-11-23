@@ -17,7 +17,7 @@ namespace HIAST.Transportation.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "9.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -83,9 +83,6 @@ namespace HIAST.Transportation.Persistence.Migrations
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LicenseExpiryDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("LicenseNumber")
                         .IsRequired()
