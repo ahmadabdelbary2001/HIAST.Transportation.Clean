@@ -14,7 +14,7 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
     public async Task<Employee?> GetByEmployeeIdAsync(string employeeId)
     {
         return await _context.Employees
-            .FirstOrDefaultAsync(e => e.EmployeeId == employeeId);
+            .FirstOrDefaultAsync(e => e.EmployeeNumber == employeeId);
     }
 
     public async Task<IReadOnlyList<Employee>> GetEmployeesByDepartmentAsync(string department)
