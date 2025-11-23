@@ -1,5 +1,6 @@
 using AutoMapper;
 using HIAST.Transportation.Application.Contracts.Persistence;
+using HIAST.Transportation.Application.Contracts.Logging;
 using HIAST.Transportation.Application.DTOs.Line.Validators;
 using HIAST.Transportation.Application.Exceptions;
 using MediatR;
@@ -10,26 +11,36 @@ public class CreateLineCommandHandler : IRequestHandler<CreateLineCommand, int>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IAppLogger<CreateLineCommandHandler> _logger;
 
-    public CreateLineCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public CreateLineCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IAppLogger<CreateLineCommandHandler> logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _logger = logger;
     }
 
     public async Task<int> Handle(CreateLineCommand request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Starting line creation process");
+
         var validator = new CreateLineDtoValidator();
         var validationResult = await validator.ValidateAsync(request.LineDto, cancellationToken);
 
         if (!validationResult.IsValid)
+        {
+            _logger.LogWarning("Line creation failed validation: {Errors}", validationResult.Errors);
             throw new BadRequestException("Invalid Line", validationResult);
+        }
 
         var line = _mapper.Map<Domain.Entities.Line>(request.LineDto);
+        
+        _logger.LogInformation("Creating line with name: {LineName}", line.Name);
 
         await _unitOfWork.LineRepository.CreateAsync(line);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        _logger.LogInformation("Line created successfully with ID: {LineId}", line.Id);
         return line.Id;
     }
 }

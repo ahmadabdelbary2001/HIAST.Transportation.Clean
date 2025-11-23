@@ -1,5 +1,6 @@
 using AutoMapper;
 using HIAST.Transportation.Application.Contracts.Persistence;
+using HIAST.Transportation.Application.Contracts.Logging;
 using HIAST.Transportation.Application.DTOs.Driver;
 using HIAST.Transportation.Application.Exceptions;
 using MediatR;
@@ -10,19 +11,27 @@ public class GetDriverDetailQueryHandler : IRequestHandler<GetDriverDetailQuery,
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IAppLogger<GetDriverDetailQueryHandler> _logger;
 
-    public GetDriverDetailQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public GetDriverDetailQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, IAppLogger<GetDriverDetailQueryHandler> logger)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _logger = logger;
     }
 
     public async Task<DriverDto> Handle(GetDriverDetailQuery request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Fetching driver details for ID: {DriverId}", request.Id);
+
         var driver = await _unitOfWork.DriverRepository.GetByIdAsync(request.Id);
         if (driver == null)
+        {
+            _logger.LogWarning("Driver not found with ID: {DriverId}", request.Id);
             throw new NotFoundException(nameof(Domain.Entities.Driver), request.Id);
+        }
 
+        _logger.LogInformation("Successfully fetched driver details for ID: {DriverId}", request.Id);
         return _mapper.Map<DriverDto>(driver);
     }
 }
