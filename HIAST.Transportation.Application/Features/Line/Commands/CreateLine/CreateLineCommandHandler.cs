@@ -23,7 +23,7 @@ public class CreateLineCommandHandler : IRequestHandler<CreateLineCommand, int>
         var validationResult = await validator.ValidateAsync(request.LineDto, cancellationToken);
 
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult);
+            throw new BadRequestException("Invalid Line", validationResult);
 
         var line = _mapper.Map<Domain.Entities.Line>(request.LineDto);
 

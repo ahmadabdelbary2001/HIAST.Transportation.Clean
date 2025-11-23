@@ -23,7 +23,7 @@ public class UpdateLineSubscriptionCommandHandler : IRequestHandler<UpdateLineSu
         var validationResult = await validator.ValidateAsync(request.LineSubscriptionDto, cancellationToken);
 
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult);
+            throw new BadRequestException("Invalid LineSubscription", validationResult);
 
         var lineSubscription = await _unitOfWork.LineSubscriptionRepository.GetByIdAsync(request.LineSubscriptionDto.Id);
         if (lineSubscription == null)

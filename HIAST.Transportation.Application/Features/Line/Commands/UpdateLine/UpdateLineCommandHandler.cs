@@ -23,7 +23,7 @@ public class UpdateLineCommandHandler : IRequestHandler<UpdateLineCommand, Unit>
         var validationResult = await validator.ValidateAsync(request.LineDto, cancellationToken);
 
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult);
+            throw new BadRequestException("Invalid Line", validationResult);
 
         var line = await _unitOfWork.LineRepository.GetByIdAsync(request.LineDto.Id);
         if (line == null)

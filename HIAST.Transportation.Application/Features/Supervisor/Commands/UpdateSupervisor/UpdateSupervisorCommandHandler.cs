@@ -23,7 +23,7 @@ public class UpdateSupervisorCommandHandler : IRequestHandler<UpdateSupervisorCo
         var validationResult = await validator.ValidateAsync(request.SupervisorDto, cancellationToken);
 
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult);
+            throw new BadRequestException("Invalid Supervisor", validationResult);
 
         var supervisor = await _unitOfWork.SupervisorRepository.GetByIdAsync(request.SupervisorDto.Id);
         if (supervisor == null)

@@ -23,7 +23,7 @@ public class UpdateStopCommandHandler : IRequestHandler<UpdateStopCommand, Unit>
         var validationResult = await validator.ValidateAsync(request.StopDto, cancellationToken);
 
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult);
+            throw new BadRequestException("Invalid Stop", validationResult);
 
         var stop = await _unitOfWork.StopRepository.GetByIdAsync(request.StopDto.Id);
         if (stop == null)

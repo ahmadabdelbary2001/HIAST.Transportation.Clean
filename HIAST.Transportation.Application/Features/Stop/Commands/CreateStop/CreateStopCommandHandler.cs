@@ -23,7 +23,7 @@ public class CreateStopCommandHandler : IRequestHandler<CreateStopCommand, int>
         var validationResult = await validator.ValidateAsync(request.StopDto, cancellationToken);
 
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult);
+            throw new BadRequestException("Invalid Stop", validationResult);
 
         var stop = _mapper.Map<Domain.Entities.Stop>(request.StopDto);
 

@@ -23,9 +23,8 @@ public class UpdateDriverCommandHandler : IRequestHandler<UpdateDriverCommand, U
         var validationResult = await validator.ValidateAsync(request.DriverDto, cancellationToken);
 
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult);
-
-        // FIX: Corrected repository property name
+            throw new BadRequestException("Invalid Driver", validationResult);
+        
         var driver = await _unitOfWork.DriverRepository.GetByIdAsync(request.DriverDto.Id);
         if (driver == null)
             throw new NotFoundException(nameof(Domain.Entities.Driver), request.DriverDto.Id);

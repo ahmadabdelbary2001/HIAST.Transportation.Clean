@@ -23,7 +23,7 @@ public class UpdateBusCommandHandler : IRequestHandler<UpdateBusCommand, Unit>
         var validationResult = await validator.ValidateAsync(request.BusDto, cancellationToken);
 
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult);
+            throw new BadRequestException("Invalid Bus", validationResult);
 
         var bus = await _unitOfWork.BusRepository.GetByIdAsync(request.BusDto.Id);
         if (bus == null)

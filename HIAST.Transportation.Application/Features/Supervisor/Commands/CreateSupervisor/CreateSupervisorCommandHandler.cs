@@ -23,7 +23,7 @@ public class CreateSupervisorCommandHandler : IRequestHandler<CreateSupervisorCo
         var validationResult = await validator.ValidateAsync(request.SupervisorDto, cancellationToken);
 
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult);
+            throw new BadRequestException("Invalid Supervisor", validationResult);
 
         var supervisor = _mapper.Map<Domain.Entities.Supervisor>(request.SupervisorDto);
 

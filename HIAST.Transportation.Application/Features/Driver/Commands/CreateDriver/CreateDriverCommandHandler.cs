@@ -23,8 +23,8 @@ public class CreateDriverCommandHandler : IRequestHandler<CreateDriverCommand, i
         var validationResult = await validator.ValidateAsync(request.DriverDto, cancellationToken);
 
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult);
-
+            throw new BadRequestException("Invalid Driver", validationResult);
+        
         var driver = _mapper.Map<Domain.Entities.Driver>(request.DriverDto);
 
         await _unitOfWork.DriverRepository.CreateAsync(driver);

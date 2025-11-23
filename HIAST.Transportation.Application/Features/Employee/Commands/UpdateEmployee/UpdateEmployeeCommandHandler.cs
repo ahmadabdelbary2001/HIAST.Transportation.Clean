@@ -24,9 +24,7 @@ public class UpdateEmployeeCommandHandler : IRequestHandler<UpdateEmployeeComman
         var validationResult = await validator.ValidateAsync(request.EmployeeDto, cancellationToken);
 
         if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult);
-        }
+            throw new BadRequestException("Invalid Employee", validationResult);
 
         // 2. Retrieve the existing employee from the database.
         var employeeToUpdate = await _unitOfWork.EmployeeRepository.GetByIdAsync(request.EmployeeDto.Id);

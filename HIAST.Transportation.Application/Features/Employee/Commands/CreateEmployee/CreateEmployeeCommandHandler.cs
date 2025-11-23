@@ -25,9 +25,7 @@ public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeComman
 
         // 2. If validation fails, throw a custom exception
         if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult);
-        }
+            throw new BadRequestException("Invalid Employee", validationResult);
 
         // 3. Map the DTO to the domain entity
         var employee = _mapper.Map<Domain.Entities.Employee>(request.EmployeeDto);

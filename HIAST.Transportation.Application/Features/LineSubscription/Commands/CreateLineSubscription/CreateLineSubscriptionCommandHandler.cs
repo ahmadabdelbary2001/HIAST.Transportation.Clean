@@ -23,7 +23,7 @@ public class CreateLineSubscriptionCommandHandler : IRequestHandler<CreateLineSu
         var validationResult = await validator.ValidateAsync(request.LineSubscriptionDto, cancellationToken);
 
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult);
+            throw new BadRequestException("Invalid LineSubscription", validationResult);
 
         var lineSubscription = _mapper.Map<Domain.Entities.LineSubscription>(request.LineSubscriptionDto);
 

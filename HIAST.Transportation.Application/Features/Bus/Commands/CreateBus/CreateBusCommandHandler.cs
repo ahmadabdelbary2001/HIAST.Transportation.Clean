@@ -23,7 +23,7 @@ public class CreateBusCommandHandler : IRequestHandler<CreateBusCommand, int>
         var validationResult = await validator.ValidateAsync(request.BusDto, cancellationToken);
 
         if (!validationResult.IsValid)
-            throw new ValidationException(validationResult);
+            throw new BadRequestException("Invalid Bus", validationResult);
 
         var bus = _mapper.Map<Domain.Entities.Bus>(request.BusDto);
 
