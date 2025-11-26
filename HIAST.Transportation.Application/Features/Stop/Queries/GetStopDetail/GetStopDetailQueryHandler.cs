@@ -24,7 +24,7 @@ public class GetStopDetailQueryHandler : IRequestHandler<GetStopDetailQuery, Sto
     {
         _logger.LogInformation("Fetching stop details for ID: {StopId}", request.Id);
 
-        var stop = await _unitOfWork.StopRepository.GetByIdAsync(request.Id);
+        var stop = await _unitOfWork.StopRepository.GetStopWithDetailsAsync(request.Id);
         if (stop == null)
         {
             _logger.LogWarning("Stop not found with ID: {StopId}", request.Id);

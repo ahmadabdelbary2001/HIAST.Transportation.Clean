@@ -9,8 +9,11 @@ public class StopProfile : Profile
     public StopProfile()
     {
         // Maps for reading data
-        CreateMap<Stop, StopDto>().ReverseMap();
-        CreateMap<Stop, StopListDto>().ReverseMap();
+        CreateMap<Stop, StopDto>()
+            .ForMember(dest => dest.LineName, opt => opt.MapFrom(src => src.Line != null ? src.Line.Name : string.Empty));
+            
+        CreateMap<Stop, StopListDto>()
+            .ForMember(dest => dest.LineName, opt => opt.MapFrom(src => src.Line != null ? src.Line.Name : string.Empty));
 
         // Maps for writing data
         CreateMap<CreateStopDto, Stop>();

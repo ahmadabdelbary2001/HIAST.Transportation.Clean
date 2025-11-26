@@ -23,7 +23,7 @@ public class GetStopListQueryHandler : IRequestHandler<GetStopListQuery, List<St
     {
         _logger.LogInformation("Fetching list of all stops");
 
-        var stops = await _unitOfWork.StopRepository.GetAllAsync();
+        var stops = await _unitOfWork.StopRepository.GetAllStopsWithDetailsAsync();
         
         _logger.LogInformation("Successfully fetched {StopCount} stops", stops.Count);
         return _mapper.Map<List<StopListDto>>(stops);
