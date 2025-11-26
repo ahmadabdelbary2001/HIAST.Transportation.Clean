@@ -8,9 +8,20 @@ public class LineProfile : Profile
 {
     public LineProfile()
     {
-        // Maps for reading data, including the nested Supervisor name.
-        CreateMap<Line, LineDto>();
-        CreateMap<Line, LineListDto>();
+        // Maps for reading data
+        CreateMap<Line, LineDto>()
+            // Add this line to map the Supervisor's name
+            .ForMember(
+                dest => dest.SupervisorName,
+                opt => opt.MapFrom(src => $"{src.Supervisor.FirstName} {src.Supervisor.LastName}")
+            );
+
+        CreateMap<Line, LineListDto>()
+            // And add this line for the list DTO as well
+            .ForMember(
+                dest => dest.SupervisorName,
+                opt => opt.MapFrom(src => $"{src.Supervisor.FirstName} {src.Supervisor.LastName}")
+            );
         
         // Maps for writing data.
         CreateMap<CreateLineDto, Line>();

@@ -23,7 +23,7 @@ public class GetLineListQueryHandler : IRequestHandler<GetLineListQuery, List<Li
     {
         _logger.LogInformation("Fetching list of all lines");
 
-        var lines = await _unitOfWork.LineRepository.GetAllAsync();
+        var lines = await _unitOfWork.LineRepository.GetAllLinesWithSupervisorDetailsAsync();
         
         _logger.LogInformation("Successfully fetched {LineCount} lines", lines.Count);
         return _mapper.Map<List<LineListDto>>(lines);
