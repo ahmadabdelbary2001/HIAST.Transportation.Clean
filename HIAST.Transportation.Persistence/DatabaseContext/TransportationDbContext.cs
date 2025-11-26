@@ -12,7 +12,6 @@ public class TransportationDbContext : DbContext
 
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<Driver> Drivers => Set<Driver>();
-    public DbSet<Supervisor> Supervisors => Set<Supervisor>();
     public DbSet<Bus> Buses => Set<Bus>();
     public DbSet<Stop> Stops => Set<Stop>();
     public DbSet<Line> Lines => Set<Line>();

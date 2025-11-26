@@ -16,11 +16,7 @@ public class LineConfiguration : IEntityTypeConfiguration<Line>
 
         builder.Property(l => l.Description)
             .HasMaxLength(1000);
-
-        builder.Property(l => l.ScheduleType)
-            .IsRequired()
-            .HasMaxLength(50);
-
+        
         builder.Property(l => l.SupervisorId)
             .IsRequired();
 
@@ -31,24 +27,24 @@ public class LineConfiguration : IEntityTypeConfiguration<Line>
             .IsRequired();
 
         // Indexes
-        builder.HasIndex(l => l.Name);
+        builder.HasIndex(l => l.Name).IsUnique();
         builder.HasIndex(l => l.SupervisorId);
         builder.HasIndex(l => l.BusId);
         builder.HasIndex(l => l.DriverId);
 
         // Relationships
         builder.HasOne(l => l.Supervisor)
-            .WithMany(s => s.Lines)
+            .WithMany()
             .HasForeignKey(l => l.SupervisorId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(l => l.Bus)
-            .WithMany(b => b.Lines)
+            .WithMany()
             .HasForeignKey(l => l.BusId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(l => l.Driver)
-            .WithMany(d => d.Lines)
+            .WithMany()
             .HasForeignKey(l => l.DriverId)
             .OnDelete(DeleteBehavior.Restrict);
 

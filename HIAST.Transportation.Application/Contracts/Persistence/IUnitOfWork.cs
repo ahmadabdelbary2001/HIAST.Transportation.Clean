@@ -6,7 +6,6 @@ public interface IUnitOfWork : IDisposable
 {
     IEmployeeRepository EmployeeRepository { get; }
     IDriverRepository DriverRepository { get; }
-    ISupervisorRepository SupervisorRepository { get; }
     IBusRepository BusRepository { get; }
     IStopRepository StopRepository { get; }
     ILineRepository LineRepository { get; }

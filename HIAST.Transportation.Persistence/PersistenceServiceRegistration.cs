@@ -23,7 +23,6 @@ public static class PersistenceServiceRegistration
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<IDriverRepository, DriverRepository>();
-        services.AddScoped<ISupervisorRepository, SupervisorRepository>();
         services.AddScoped<IBusRepository, BusRepository>();
         services.AddScoped<IStopRepository, StopRepository>();
         services.AddScoped<ILineRepository, LineRepository>();

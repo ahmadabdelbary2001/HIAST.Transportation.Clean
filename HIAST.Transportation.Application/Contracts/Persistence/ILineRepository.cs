@@ -6,4 +6,6 @@ public interface ILineRepository : IGenericRepository<Line>
 {
     Task<IReadOnlyList<Line>> GetLinesBySupervisorIdAsync(int supervisorId);
     Task<Line?> GetLineWithStopsAsync(int lineId);
+    Task<IReadOnlyList<Line>> GetAllLinesWithSupervisorDetailsAsync(); 
+
 }

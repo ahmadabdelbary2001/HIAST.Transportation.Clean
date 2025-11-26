@@ -30,4 +30,12 @@ public class LineRepository : GenericRepository<Line>, ILineRepository
             .Include(l => l.Driver)
             .FirstOrDefaultAsync(l => l.Id == lineId);
     }
+    
+    public async Task<IReadOnlyList<Line>> GetAllLinesWithSupervisorDetailsAsync()
+    {
+        return await _context.Lines
+            .Include(l => l.Supervisor) // Eagerly load the Supervisor navigation property.
+            .AsNoTracking()             // Use for read-only queries to boost performance.
+            .ToListAsync();
+    }
 }

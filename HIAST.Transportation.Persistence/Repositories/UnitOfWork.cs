@@ -8,7 +8,6 @@ public class UnitOfWork : IUnitOfWork
     private readonly TransportationDbContext _context;
     private IEmployeeRepository? _employeeRepository;
     private IDriverRepository? _driverRepository;
-    private ISupervisorRepository? _supervisorRepository;
     private IBusRepository? _busRepository;
     private IStopRepository? _stopRepository;
     private ILineRepository? _lineRepository;
@@ -24,9 +23,6 @@ public class UnitOfWork : IUnitOfWork
 
     public IDriverRepository DriverRepository => 
         _driverRepository ??= new DriverRepository(_context);
-
-    public ISupervisorRepository SupervisorRepository => 
-        _supervisorRepository ??= new SupervisorRepository(_context);
 
     public IBusRepository BusRepository => 
         _busRepository ??= new BusRepository(_context);
