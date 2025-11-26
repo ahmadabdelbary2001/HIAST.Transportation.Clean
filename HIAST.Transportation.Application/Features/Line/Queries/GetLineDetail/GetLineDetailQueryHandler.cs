@@ -24,7 +24,7 @@ public class GetLineDetailQueryHandler : IRequestHandler<GetLineDetailQuery, Lin
     {
         _logger.LogInformation("Fetching line details with stops for ID: {LineId}", request.Id);
 
-        var line = await _unitOfWork.LineRepository.GetLineWithStopsAsync(request.Id);
+        var line = await _unitOfWork.LineRepository.GetLineWithDetailsAsync(request.Id);
         if (line == null)
         {
             _logger.LogWarning("Line not found with ID: {LineId}", request.Id);

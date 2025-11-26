@@ -21,13 +21,15 @@ public class LineRepository : GenericRepository<Line>, ILineRepository
             .ToListAsync();
     }
 
-    public async Task<Line?> GetLineWithStopsAsync(int lineId)
+    public async Task<Line?> GetLineWithDetailsAsync(int lineId) // Renamed for clarity
     {
         return await _context.Lines
-            .Include(l => l.Stops.OrderBy(s => s.SequenceOrder))
             .Include(l => l.Supervisor)
             .Include(l => l.Bus)
             .Include(l => l.Driver)
+            .Include(l => l.Stops.OrderBy(s => s.SequenceOrder))
+            .Include(l => l.LineSubscriptions)
+            .ThenInclude(ls => ls.Employee) // Essential for getting the EmployeeName
             .FirstOrDefaultAsync(l => l.Id == lineId);
     }
     

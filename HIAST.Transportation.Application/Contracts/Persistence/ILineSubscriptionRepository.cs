@@ -7,4 +7,6 @@ public interface ILineSubscriptionRepository : IGenericRepository<LineSubscripti
     Task<IReadOnlyList<LineSubscription>> GetSubscriptionsByEmployeeIdAsync(int employeeId);
     Task<IReadOnlyList<LineSubscription>> GetSubscriptionsByLineIdAsync(int lineId);
     Task<IReadOnlyList<LineSubscription>> GetActiveSubscriptionsAsync();
+    Task<LineSubscription?> GetLineSubscriptionWithDetailsAsync(int id);
+    Task<IReadOnlyList<LineSubscription>> GetAllLineSubscriptionsWithDetailsAsync();
 }

@@ -14,7 +14,8 @@ public class LineProfile : Profile
             .ForMember(
                 dest => dest.SupervisorName,
                 opt => opt.MapFrom(src => $"{src.Supervisor.FirstName} {src.Supervisor.LastName}")
-            );
+            )
+            .ForMember(dest => dest.Subscriptions, opt => opt.MapFrom(src => src.LineSubscriptions));
 
         CreateMap<Line, LineListDto>()
             // And add this line for the list DTO as well

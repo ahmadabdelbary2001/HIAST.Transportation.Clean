@@ -23,7 +23,7 @@ public class GetLineSubscriptionListQueryHandler : IRequestHandler<GetLineSubscr
     {
         _logger.LogInformation("Fetching list of all line subscriptions");
 
-        var lineSubscriptions = await _unitOfWork.LineSubscriptionRepository.GetAllAsync();
+        var lineSubscriptions = await _unitOfWork.LineSubscriptionRepository.GetAllLineSubscriptionsWithDetailsAsync();
         
         _logger.LogInformation("Successfully fetched {LineSubscriptionCount} line subscriptions", lineSubscriptions.Count);
         return _mapper.Map<List<LineSubscriptionListDto>>(lineSubscriptions);

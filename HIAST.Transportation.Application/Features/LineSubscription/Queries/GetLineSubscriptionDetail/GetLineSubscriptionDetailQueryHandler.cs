@@ -24,7 +24,7 @@ public class GetLineSubscriptionDetailQueryHandler : IRequestHandler<GetLineSubs
     {
         _logger.LogInformation("Fetching line subscription details for ID: {LineSubscriptionId}", request.Id);
 
-        var lineSubscription = await _unitOfWork.LineSubscriptionRepository.GetByIdAsync(request.Id);
+        var lineSubscription = await _unitOfWork.LineSubscriptionRepository.GetLineSubscriptionWithDetailsAsync(request.Id);
         if (lineSubscription == null)
         {
             _logger.LogWarning("Line subscription not found with ID: {LineSubscriptionId}", request.Id);
