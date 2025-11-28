@@ -17,7 +17,12 @@ public class EmployeeProfile : Profile
             .ForMember(
                 dest => dest.SubscribedLineId,
                 opt => opt.MapFrom(src => src.Subscription != null ? (int?)src.Subscription.LineId : null)
+            )
+            .ForMember(
+                dest => dest.LineSubscriptionId,
+                opt => opt.MapFrom(src => src.Subscription != null ? (int?)src.Subscription.Id : null)
             );
+        
         CreateMap<Employee, EmployeeListDto>().ReverseMap();
         
         // Maps for writing data

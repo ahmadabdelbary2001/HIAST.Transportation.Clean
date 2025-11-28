@@ -11,5 +11,12 @@ public class EmployeeDto
     public string Email { get; set; } = string.Empty;
     public string? PhoneNumber { get; set; }
     public Department? Department { get; set; }
+    
+    public int? LineSubscriptionId { get; set; } 
+    
     public int? SubscribedLineId { get; set; }
-    public string? SubscribedLineName { get; set; }}
+    public string? SubscribedLineName { get; set; }
+    
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+}
