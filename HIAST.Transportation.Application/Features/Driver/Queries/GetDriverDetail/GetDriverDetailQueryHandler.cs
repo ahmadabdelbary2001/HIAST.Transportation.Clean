@@ -24,14 +24,16 @@ public class GetDriverDetailQueryHandler : IRequestHandler<GetDriverDetailQuery,
     {
         _logger.LogInformation("Fetching driver details for ID: {DriverId}", request.Id);
 
-        var driver = await _unitOfWork.DriverRepository.GetByIdAsync(request.Id);
+        var driver = await _unitOfWork.DriverRepository.GetDriverWithDetailsAsync(request.Id);
         if (driver == null)
         {
             _logger.LogWarning("Driver not found with ID: {DriverId}", request.Id);
             throw new NotFoundException(nameof(Domain.Entities.Driver), request.Id);
         }
 
+        var driverDto = _mapper.Map<DriverDto>(driver);
+
         _logger.LogInformation("Successfully fetched driver details for ID: {DriverId}", request.Id);
-        return _mapper.Map<DriverDto>(driver);
+        return driverDto;
     }
 }

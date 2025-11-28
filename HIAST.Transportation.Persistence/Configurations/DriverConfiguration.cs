@@ -25,11 +25,5 @@ public class DriverConfiguration : IEntityTypeConfiguration<Driver>
         // Indexes
         builder.HasIndex(d => d.LicenseNumber)
             .IsUnique();
-
-        // Relationships
-        builder.HasMany(d => d.Lines)
-            .WithOne(l => l.Driver)
-            .HasForeignKey(l => l.DriverId)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }
