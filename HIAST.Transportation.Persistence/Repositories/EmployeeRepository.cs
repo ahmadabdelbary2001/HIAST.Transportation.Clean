@@ -1,5 +1,6 @@
 using HIAST.Transportation.Application.Contracts.Persistence;
 using HIAST.Transportation.Domain.Entities;
+using HIAST.Transportation.Domain.Enums;
 using HIAST.Transportation.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,8 +20,25 @@ public class EmployeeRepository : GenericRepository<Employee>, IEmployeeReposito
 
     public async Task<IReadOnlyList<Employee>> GetEmployeesByDepartmentAsync(string department)
     {
+        // Safely parse the string into a Department enum value.
+        // The 'true' argument makes the parsing case-insensitive.
+        if (Enum.TryParse<Department>(department, true, out var departmentEnum))
+        {
+            return await _context.Employees
+                .Where(e => e.Department == departmentEnum)
+                .ToListAsync();
+        }
+
+        // If the string is not a valid department, return an empty list.
+        return new List<Employee>();
+    }
+    
+    public async Task<Employee?> GetEmployeeWithSubscriptionDetailsAsync(int employeeId)
+    {
         return await _context.Employees
-            .Where(e => e.Department == department)
-            .ToListAsync();
+            .Include(e => e.Subscription)
+            .ThenInclude(sub => sub.Line)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(e => e.Id == employeeId);
     }
 }

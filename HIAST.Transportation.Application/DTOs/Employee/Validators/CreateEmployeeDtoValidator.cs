@@ -27,6 +27,6 @@ public class CreateEmployeeDtoValidator : AbstractValidator<CreateEmployeeDto>
             .MaximumLength(20).WithMessage("{PropertyName} must not exceed 20 characters");
 
         RuleFor(x => x.Department)
-            .MaximumLength(100).WithMessage("{PropertyName} must not exceed 100 characters");
+            .IsInEnum().WithMessage("{PropertyName} must not exceed 100 characters");
     }
 }

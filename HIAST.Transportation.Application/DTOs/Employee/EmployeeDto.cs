@@ -1,3 +1,5 @@
+using HIAST.Transportation.Domain.Enums;
+
 namespace HIAST.Transportation.Application.DTOs.Employee;
 
 public class EmployeeDto
@@ -8,6 +10,6 @@ public class EmployeeDto
     public string LastName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string? PhoneNumber { get; set; }
-    public string? Department { get; set; }
-    public bool IsActive { get; set; } = true;
-}
+    public Department? Department { get; set; }
+    public int? SubscribedLineId { get; set; }
+    public string? SubscribedLineName { get; set; }}

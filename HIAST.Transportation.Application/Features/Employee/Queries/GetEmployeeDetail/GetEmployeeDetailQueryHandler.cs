@@ -24,7 +24,7 @@ public class GetEmployeeDetailQueryHandler : IRequestHandler<GetEmployeeDetailQu
     {
         _logger.LogInformation("Fetching employee details for ID: {EmployeeId}", request.Id);
 
-        var employee = await _unitOfWork.EmployeeRepository.GetByIdAsync(request.Id);
+        var employee = await _unitOfWork.EmployeeRepository.GetEmployeeWithSubscriptionDetailsAsync(request.Id);
         if (employee == null)
         {
             _logger.LogWarning("Employee not found with ID: {EmployeeId}", request.Id);

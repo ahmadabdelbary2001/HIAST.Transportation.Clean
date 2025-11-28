@@ -1,6 +1,7 @@
 using HIAST.Transportation.Application;
 using HIAST.Transportation.Infrastructure;
 using HIAST.Transportation.Persistence;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,12 @@ builder.Services.AddInfrastructureServices();
 // Add services to the container.
 // Define the CORS policy name
 const string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // This tells the serializer to convert enums to/from strings for all JSON operations.
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 builder.Services.AddSwaggerGen();
 

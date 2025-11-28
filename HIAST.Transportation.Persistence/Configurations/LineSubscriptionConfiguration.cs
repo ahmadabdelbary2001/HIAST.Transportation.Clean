@@ -31,8 +31,8 @@ public class LineSubscriptionConfiguration : IEntityTypeConfiguration<LineSubscr
 
         // Relationships
         builder.HasOne(ls => ls.Employee)
-            .WithMany(e => e.LineSubscriptions)
-            .HasForeignKey(ls => ls.EmployeeId)
+            .WithOne(e => e.Subscription)
+            .HasForeignKey<LineSubscription>(ls => ls.EmployeeId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(ls => ls.Line)

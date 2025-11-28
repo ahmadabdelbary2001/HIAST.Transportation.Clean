@@ -31,26 +31,21 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
             .HasMaxLength(20);
 
         builder.Property(e => e.Department)
-            .IsRequired()
+            .IsRequired(false) // Department can be null
+            .HasConversion<string>() 
             .HasMaxLength(100);
-
-        builder.Property(e => e.IsActive)
-            .IsRequired()
-            .HasDefaultValue(true);
-
+        
         // Indexes
         builder.HasIndex(e => e.EmployeeNumber)
             .IsUnique();
 
         builder.HasIndex(e => e.Email)
             .IsUnique();
-
-        builder.HasIndex(e => e.IsActive);
-
+        
         // Relationships
-        builder.HasMany(e => e.LineSubscriptions)
+        builder.HasOne(e => e.Subscription)
             .WithOne(ls => ls.Employee)
-            .HasForeignKey(ls => ls.EmployeeId)
+            .HasForeignKey<LineSubscription>(ls => ls.EmployeeId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -1,4 +1,5 @@
 using HIAST.Transportation.Domain.Common;
+using HIAST.Transportation.Domain.Enums;
 
 namespace HIAST.Transportation.Domain.Entities;
 
@@ -9,9 +10,8 @@ public class Employee : AuditableEntity
     public string LastName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string? PhoneNumber { get; set; }
-    public string? Department { get; set; }
-    public bool IsActive { get; set; } = true;
+    public Department? Department { get; set; }
 
     // Navigation properties
-    public ICollection<LineSubscription> LineSubscriptions { get; set; } = new List<LineSubscription>();
+    public LineSubscription? Subscription { get; set; } 
 }
