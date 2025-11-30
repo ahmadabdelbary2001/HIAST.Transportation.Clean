@@ -16,7 +16,9 @@ public class EmployeeDto
     
     public int? SubscribedLineId { get; set; }
     public string? SubscribedLineName { get; set; }
-    
+
+    public bool? IsSubscriptionActive { get; set; }
+
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }

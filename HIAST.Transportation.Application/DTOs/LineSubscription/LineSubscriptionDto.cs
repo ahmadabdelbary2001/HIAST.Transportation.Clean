@@ -9,4 +9,7 @@ public class LineSubscriptionDto
     public DateTime? EndDate { get; set; }
     public string EmployeeName { get; set; } = string.Empty;
     public string LineName { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }

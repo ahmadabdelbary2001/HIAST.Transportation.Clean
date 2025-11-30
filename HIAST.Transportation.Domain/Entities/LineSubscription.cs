@@ -5,6 +5,7 @@ namespace HIAST.Transportation.Domain.Entities;
 // Junction table for the many-to-many relationship between Employee and Line
 public class LineSubscription : AuditableEntity
 {
+    public bool IsActive { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
 

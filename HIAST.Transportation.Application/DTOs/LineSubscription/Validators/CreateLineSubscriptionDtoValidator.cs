@@ -14,10 +14,8 @@ public class CreateLineSubscriptionDtoValidator : AbstractValidator<CreateLineSu
 
         RuleFor(x => x.StartDate)
             .NotEmpty().WithMessage("{PropertyName} is required");
-
-        RuleFor(x => x.EndDate)
-            .GreaterThan(x => x.StartDate)
-            .When(x => x.EndDate.HasValue)
-            .WithMessage("{PropertyName} must be greater than StartDate");
+        
+        RuleFor(x => x.IsActive)
+            .NotNull().WithMessage("{PropertyName} is required.");
     }
 }

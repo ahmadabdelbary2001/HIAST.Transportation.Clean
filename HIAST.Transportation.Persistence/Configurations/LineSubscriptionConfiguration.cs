@@ -16,6 +16,10 @@ public class LineSubscriptionConfiguration : IEntityTypeConfiguration<LineSubscr
         builder.Property(ls => ls.LineId)
             .IsRequired();
 
+        builder.Property(ls => ls.IsActive)
+            .IsRequired()
+            .HasDefaultValue(true);
+        
         builder.Property(ls => ls.StartDate)
             .IsRequired();
 
