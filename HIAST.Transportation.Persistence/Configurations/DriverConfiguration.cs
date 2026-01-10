@@ -25,5 +25,6 @@ public class DriverConfiguration : IEntityTypeConfiguration<Driver>
         // Indexes
         builder.HasIndex(d => d.LicenseNumber)
             .IsUnique();
+
     }
 }

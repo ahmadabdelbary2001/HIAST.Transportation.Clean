@@ -17,7 +17,7 @@ namespace HIAST.Transportation.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.11")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -179,9 +179,6 @@ namespace HIAST.Transportation.Persistence.Migrations
                     b.Property<int>("BusId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("BusId1")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -193,9 +190,6 @@ namespace HIAST.Transportation.Persistence.Migrations
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<int>("DriverId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DriverId1")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -216,11 +210,7 @@ namespace HIAST.Transportation.Persistence.Migrations
 
                     b.HasIndex("BusId");
 
-                    b.HasIndex("BusId1");
-
                     b.HasIndex("DriverId");
-
-                    b.HasIndex("DriverId1");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -326,24 +316,16 @@ namespace HIAST.Transportation.Persistence.Migrations
             modelBuilder.Entity("HIAST.Transportation.Domain.Entities.Line", b =>
                 {
                     b.HasOne("HIAST.Transportation.Domain.Entities.Bus", "Bus")
-                        .WithMany()
+                        .WithMany("Lines")
                         .HasForeignKey("BusId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HIAST.Transportation.Domain.Entities.Bus", null)
-                        .WithMany("Lines")
-                        .HasForeignKey("BusId1");
-
                     b.HasOne("HIAST.Transportation.Domain.Entities.Driver", "Driver")
-                        .WithMany()
+                        .WithMany("Lines")
                         .HasForeignKey("DriverId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("HIAST.Transportation.Domain.Entities.Driver", null)
-                        .WithMany("Lines")
-                        .HasForeignKey("DriverId1");
 
                     b.HasOne("HIAST.Transportation.Domain.Entities.Employee", "Supervisor")
                         .WithMany()

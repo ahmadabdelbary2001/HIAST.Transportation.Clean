@@ -11,8 +11,6 @@ builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddInfrastructureServices();
 
 // Add services to the container.
-// Define the CORS policy name
-const string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -25,7 +23,7 @@ builder.Services.AddSwaggerGen();
 // Configure CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
+    options.AddPolicy(name: "AllowReactApp",
         policy =>
         {
             // In a real application, you would lock this down to your actual frontend URL.

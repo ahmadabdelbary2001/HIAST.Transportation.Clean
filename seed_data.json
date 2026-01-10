@@ -1,0 +1,112 @@
+{
+  "buses": [
+    {
+      "licensePlate": "دمشق-123456",
+      "capacity": 45,
+      "status": "Available"
+    },
+    {
+      "licensePlate": "ريف-789012",
+      "capacity": 25,
+      "status": "Available"
+    },
+    {
+      "licensePlate": "حلب-456789",
+      "capacity": 30,
+      "status": "InService"
+    }
+  ],
+  "drivers": [
+    {
+      "name": "محمد السعيد",
+      "licenseNumber": "LIC-001",
+      "contactInfo": "0933111222"
+    },
+    {
+      "name": "علي حسن",
+      "licenseNumber": "LIC-002",
+      "contactInfo": "0944333444"
+    },
+    {
+      "name": "سامر العلي",
+      "licenseNumber": "LIC-003",
+      "contactInfo": "0955666777"
+    }
+  ],
+  "employees": [
+    {
+      "employeeNumber": "EMP-100",
+      "firstName": "خالد",
+      "lastName": "محمود",
+      "email": "khaled@hiast.edu.sy",
+      "phoneNumber": "011-555666",
+      "department": "IT"
+    },
+    {
+      "employeeNumber": "EMP-101",
+      "firstName": "سارة",
+      "lastName": "الأحمد",
+      "email": "sara@hiast.edu.sy",
+      "phoneNumber": "011-777888",
+      "department": "Administration"
+    },
+    {
+      "employeeNumber": "EMP-102",
+      "firstName": "أحمد",
+      "lastName": "منصور",
+      "email": "ahmad@hiast.edu.sy",
+      "phoneNumber": "011-999000",
+      "department": "Finance"
+    }
+  ],
+  "lines": [
+    {
+      "name": "خط المزة",
+      "description": "من البرامكة إلى المزة جبل",
+      "busId": 1,
+      "driverId": 1,
+      "supervisorId": 1
+    },
+    {
+      "name": "خط البرامكة",
+      "description": "من الجمارك إلى البرامكة",
+      "busId": 2,
+      "driverId": 2,
+      "supervisorId": 2
+    }
+  ],
+  "stops": [
+    {
+      "address": "موقف الكليات",
+      "sequenceOrder": 1,
+      "stopType": "Intermediate",
+      "lineId": 1
+    },
+    {
+      "address": "موقف الجمارك",
+      "sequenceOrder": 2,
+      "stopType": "Intermediate",
+      "lineId": 1
+    },
+    {
+      "address": "موقف الرازي",
+      "sequenceOrder": 3,
+      "stopType": "Terminus",
+      "lineId": 1
+    }
+  ],
+  "subscriptions": [
+    {
+      "employeeId": 1,
+      "lineId": 1,
+      "isActive": true,
+      "startDate": "2026-01-01T00:00:00Z"
+    },
+    {
+      "employeeId": 2,
+      "lineId": 2,
+      "isActive": true,
+      "startDate": "2026-01-05T00:00:00Z"
+    }
+  ]
+}

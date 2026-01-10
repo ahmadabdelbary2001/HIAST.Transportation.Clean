@@ -20,7 +20,8 @@ public class BusConfiguration : IEntityTypeConfiguration<Bus>
 
         builder.Property(b => b.Status)
             .IsRequired()
-            .HasDefaultValue(BusStatus.Available);
+            .HasDefaultValue(BusStatus.Available)
+            .HasSentinel(BusStatus.Available);
 
         // Indexes
         builder.HasIndex(b => b.LicensePlate)
@@ -28,10 +29,5 @@ public class BusConfiguration : IEntityTypeConfiguration<Bus>
 
         builder.HasIndex(b => b.Status);
 
-        // Relationships
-        builder.HasMany(b => b.Lines)
-            .WithOne(l => l.Bus)
-            .HasForeignKey(l => l.BusId)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }

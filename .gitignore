@@ -1,0 +1,11 @@
+[Bb]in/
+[Oo]bj/
+*.user
+*.userosscache
+*.sln.doccache
+.vs/
+.idea/
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
