@@ -32,6 +32,17 @@ public class GetBusDetailQueryHandler : IRequestHandler<GetBusDetailQuery, BusDt
         }
 
         _logger.LogInformation("Successfully fetched bus details for ID: {BusId}", request.Id);
-        return _mapper.Map<BusDto>(bus);
+        
+        var busDto = _mapper.Map<BusDto>(bus);
+
+        // Fetch associated line
+        var line = await _unitOfWork.LineRepository.GetLineByBusIdAsync(bus.Id);
+        if (line != null)
+        {
+            busDto.LineId = line.Id;
+            busDto.LineName = line.Name;
+        }
+
+        return busDto;
     }
 }

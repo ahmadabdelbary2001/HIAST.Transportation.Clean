@@ -40,6 +40,16 @@ public class UpdateStopCommandHandler : IRequestHandler<UpdateStopCommand, Unit>
             throw new NotFoundException(nameof(Domain.Entities.Stop), request.StopDto.Id);
         }
 
+        if (request.StopDto.StopType == Domain.Enums.StopType.Terminus)
+        {
+            var existingStops = await _unitOfWork.StopRepository.GetStopsByLineIdAsync(request.StopDto.LineId);
+            if (existingStops.Any(s => s.StopType == Domain.Enums.StopType.Terminus && s.Id != request.StopDto.Id))
+            {
+                _logger.LogWarning("Cannot change stop {StopId} to Terminus; line {LineId} already has one.", request.StopDto.Id, request.StopDto.LineId);
+                throw new BadRequestException("This line already has a Terminus stop.");
+            }
+        }
+
         _logger.LogInformation("Updating stop with ID: {StopId}", stop.Id);
         
         _mapper.Map(request.StopDto, stop);

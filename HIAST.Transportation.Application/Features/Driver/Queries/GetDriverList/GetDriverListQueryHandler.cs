@@ -25,7 +25,14 @@ public class GetDriverListQueryHandler : IRequestHandler<GetDriverListQuery, Lis
 
         var drivers = await _unitOfWork.DriverRepository.GetAllAsync();
         
+        var driverDtos = _mapper.Map<List<DriverListDto>>(drivers);
+
+        foreach (var dto in driverDtos)
+        {
+            dto.IsAssigned = await _unitOfWork.LineRepository.IsDriverAssignedAsync(dto.Id);
+        }
+
         _logger.LogInformation("Successfully fetched {DriverCount} drivers", drivers.Count);
-        return _mapper.Map<List<DriverListDto>>(drivers);
+        return driverDtos;
     }
 }

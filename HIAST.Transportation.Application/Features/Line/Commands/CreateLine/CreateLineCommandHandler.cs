@@ -24,7 +24,7 @@ public class CreateLineCommandHandler : IRequestHandler<CreateLineCommand, int>
     {
         _logger.LogInformation("Starting line creation process");
 
-        var validator = new CreateLineDtoValidator();
+        var validator = new CreateLineDtoValidator(_unitOfWork.LineRepository);
         var validationResult = await validator.ValidateAsync(request.LineDto, cancellationToken);
 
         if (!validationResult.IsValid)
@@ -36,6 +36,22 @@ public class CreateLineCommandHandler : IRequestHandler<CreateLineCommand, int>
         var line = _mapper.Map<Domain.Entities.Line>(request.LineDto);
         
         _logger.LogInformation("Creating line with name: {LineName}", line.Name);
+
+        // Update Bus Status
+        var bus = await _unitOfWork.BusRepository.GetByIdAsync(line.BusId);
+        if (bus != null)
+        {
+            bus.Status = Domain.Enums.BusStatus.InService;
+            await _unitOfWork.BusRepository.UpdateAsync(bus);
+        }
+
+        // Auto-subscribe Supervisor
+        line.LineSubscriptions.Add(new Domain.Entities.LineSubscription
+        {
+            EmployeeId = line.SupervisorId,
+            StartDate = DateTime.UtcNow,
+            IsActive = true
+        });
 
         await _unitOfWork.LineRepository.CreateAsync(line);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

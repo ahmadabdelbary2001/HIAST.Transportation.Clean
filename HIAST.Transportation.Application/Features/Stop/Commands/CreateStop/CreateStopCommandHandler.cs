@@ -33,6 +33,16 @@ public class CreateStopCommandHandler : IRequestHandler<CreateStopCommand, int>
             throw new BadRequestException("Invalid Stop", validationResult);
         }
 
+        if (request.StopDto.StopType == Domain.Enums.StopType.Terminus)
+        {
+            var existingStops = await _unitOfWork.StopRepository.GetStopsByLineIdAsync(request.StopDto.LineId);
+            if (existingStops.Any(s => s.StopType == Domain.Enums.StopType.Terminus))
+            {
+                _logger.LogWarning("Cannot add another Terminus stop to line {LineId}", request.StopDto.LineId);
+                throw new BadRequestException("This line already has a Terminus stop.");
+            }
+        }
+
         var stop = _mapper.Map<Domain.Entities.Stop>(request.StopDto);
         
         _logger.LogInformation("Creating stop with address: {Address}", stop.Address);

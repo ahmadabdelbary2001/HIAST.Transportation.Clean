@@ -8,4 +8,6 @@ public class BusDto
     public string LicensePlate { get; set; } = string.Empty;
     public int Capacity { get; set; }
     public BusStatus Status { get; set; }
+    public int? LineId { get; set; }
+    public string? LineName { get; set; }
 }

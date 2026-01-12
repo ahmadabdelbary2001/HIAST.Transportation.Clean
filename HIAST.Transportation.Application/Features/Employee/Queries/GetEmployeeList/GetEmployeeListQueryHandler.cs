@@ -25,7 +25,17 @@ public class GetEmployeeListQueryHandler : IRequestHandler<GetEmployeeListQuery,
 
         var employees = await _unitOfWork.EmployeeRepository.GetAllAsync();
         
+        var employeeDtos = _mapper.Map<List<EmployeeListDto>>(employees);
+
+        foreach (var dto in employeeDtos)
+        {
+            var isSupervisor = await _unitOfWork.LineRepository.IsSupervisorAssignedAsync(dto.Id);
+            var isSubscribed = await _unitOfWork.LineSubscriptionRepository.IsEmployeeSubscribedAsync(dto.Id);
+            dto.IsAssigned = isSupervisor || isSubscribed;
+            dto.HasSubscription = await _unitOfWork.LineSubscriptionRepository.HasAnySubscriptionAsync(dto.Id);
+        }
+
         _logger.LogInformation("Successfully fetched {EmployeeCount} employees", employees.Count);
-        return _mapper.Map<List<EmployeeListDto>>(employees);
+        return employeeDtos;
     }
 }

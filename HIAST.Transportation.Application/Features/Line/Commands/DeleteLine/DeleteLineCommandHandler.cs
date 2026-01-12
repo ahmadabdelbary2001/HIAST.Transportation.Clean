@@ -30,6 +30,14 @@ public class DeleteLineCommandHandler : IRequestHandler<DeleteLineCommand, Unit>
         _logger.LogInformation("Deleting line with ID: {LineId} and name: {LineName}", 
             line.Id, line.Name);
 
+        // Update Bus Status to Available
+        var bus = await _unitOfWork.BusRepository.GetByIdAsync(line.BusId);
+        if (bus != null)
+        {
+            bus.Status = Domain.Enums.BusStatus.Available;
+            await _unitOfWork.BusRepository.UpdateAsync(bus);
+        }
+
         await _unitOfWork.LineRepository.DeleteAsync(line);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

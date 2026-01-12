@@ -33,6 +33,23 @@ public class CreateLineSubscriptionCommandHandler : IRequestHandler<CreateLineSu
             throw new BadRequestException("Invalid LineSubscription", validationResult);
         }
 
+        // Capacity check
+        var lineWithDetails = await _unitOfWork.LineRepository.GetLineWithDetailsAsync(request.LineSubscriptionDto.LineId);
+        if (lineWithDetails == null)
+        {
+            throw new NotFoundException(nameof(Domain.Entities.Line), request.LineSubscriptionDto.LineId);
+        }
+
+        var currentSubscriptions = await _unitOfWork.LineSubscriptionRepository.GetSubscriptionsByLineIdAsync(request.LineSubscriptionDto.LineId);
+        var activeSubsCount = currentSubscriptions.Count(s => s.IsActive);
+
+        if (activeSubsCount >= lineWithDetails.Bus.Capacity)
+        {
+            _logger.LogWarning("Capacity reached for line {LineId}. Bus {BusId} capacity is {Capacity}.", 
+                lineWithDetails.Id, lineWithDetails.BusId, lineWithDetails.Bus.Capacity);
+            throw new BadRequestException("The bus for this line has reached its maximum capacity.");
+        }
+
         var lineSubscription = _mapper.Map<Domain.Entities.LineSubscription>(request.LineSubscriptionDto);
         
         _logger.LogInformation("Creating line subscription for line ID: {LineId} and employee ID: {EmployeeId}", 

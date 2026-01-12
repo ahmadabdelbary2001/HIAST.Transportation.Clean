@@ -40,4 +40,39 @@ public class LineRepository : GenericRepository<Line>, ILineRepository
             .AsNoTracking()             // Use for read-only queries to boost performance.
             .ToListAsync();
     }
+
+    public async Task<bool> IsBusAssignedAsync(int busId, int? excludeLineId = null)
+    {
+        var query = _context.Lines.AsQueryable();
+        if (excludeLineId.HasValue)
+        {
+            query = query.Where(l => l.Id != excludeLineId.Value);
+        }
+        return await query.AnyAsync(l => l.BusId == busId);
+    }
+
+    public async Task<bool> IsDriverAssignedAsync(int driverId, int? excludeLineId = null)
+    {
+        var query = _context.Lines.AsQueryable();
+        if (excludeLineId.HasValue)
+        {
+            query = query.Where(l => l.Id != excludeLineId.Value);
+        }
+        return await query.AnyAsync(l => l.DriverId == driverId);
+    }
+
+    public async Task<bool> IsSupervisorAssignedAsync(int supervisorId, int? excludeLineId = null)
+    {
+        var query = _context.Lines.AsQueryable();
+        if (excludeLineId.HasValue)
+        {
+            query = query.Where(l => l.Id != excludeLineId.Value);
+        }
+        return await query.AnyAsync(l => l.SupervisorId == supervisorId);
+    }
+
+    public async Task<Line?> GetLineByBusIdAsync(int busId)
+    {
+        return await _context.Lines.FirstOrDefaultAsync(l => l.BusId == busId);
+    }
 }

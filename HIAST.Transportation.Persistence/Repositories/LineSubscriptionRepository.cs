@@ -58,4 +58,16 @@ public class LineSubscriptionRepository : GenericRepository<LineSubscription>, I
             .AsNoTracking()             // Use for read-only queries
             .ToListAsync();
     }
+
+    public async Task<bool> IsEmployeeSubscribedAsync(int employeeId)
+    {
+        return await _context.LineSubscriptions
+            .AnyAsync(ls => ls.EmployeeId == employeeId && ls.IsActive);
+    }
+
+    public async Task<bool> HasAnySubscriptionAsync(int employeeId)
+    {
+        return await _context.LineSubscriptions
+            .AnyAsync(ls => ls.EmployeeId == employeeId);
+    }
 }

@@ -9,4 +9,6 @@ public class EmployeeListDto
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public Department? Department { get; set; }
+    public bool IsAssigned { get; set; }
+    public bool HasSubscription { get; set; }
 }
