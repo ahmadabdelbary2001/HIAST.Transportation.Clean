@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HIAST.Transportation.Infras
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HIAST.Transportation.API", "HIAST.Transportation.API\HIAST.Transportation.API.csproj", "{C701D046-8CEB-4191-8489-F32B453AB39D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HIAST.Transportation.Identity", "HIAST.Transportation.Identity\HIAST.Transportation.Identity.csproj", "{E0314DF1-D973-4AB1-AB8D-901958DD1F0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,7 @@ Global
 		{8213762D-2E2F-4015-9A76-F4AD8898AA4F} = {C4E38529-8233-4D4E-87E9-A6B811197920}
 		{C4818B0F-327E-4556-B2F6-1407C0435BF3} = {C4E38529-8233-4D4E-87E9-A6B811197920}
 		{C701D046-8CEB-4191-8489-F32B453AB39D} = {5E28B0D1-14C3-48AA-96F3-4F7058EB50D2}
+		{E0314DF1-D973-4AB1-AB8D-901958DD1F0D} = {C4E38529-8233-4D4E-87E9-A6B811197920}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{C0A5FC0B-60BB-411B-9387-D5131B81AF98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -56,5 +59,9 @@ Global
 		{C701D046-8CEB-4191-8489-F32B453AB39D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C701D046-8CEB-4191-8489-F32B453AB39D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C701D046-8CEB-4191-8489-F32B453AB39D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0314DF1-D973-4AB1-AB8D-901958DD1F0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0314DF1-D973-4AB1-AB8D-901958DD1F0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0314DF1-D973-4AB1-AB8D-901958DD1F0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0314DF1-D973-4AB1-AB8D-901958DD1F0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

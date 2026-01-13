@@ -36,23 +36,37 @@ public class UpdateStopCommandHandler : IRequestHandler<UpdateStopCommand, Unit>
         var stop = await _unitOfWork.StopRepository.GetByIdAsync(request.StopDto.Id);
         if (stop == null)
         {
-            _logger.LogWarning("Stop not found with ID: {StopId}", request.StopDto.Id);
+            _logger.LogWarning("Stop with ID {StopId} not found", request.StopDto.Id);
             throw new NotFoundException(nameof(Domain.Entities.Stop), request.StopDto.Id);
         }
 
+        // إذا كان التحديث يجعل المحطة نهائية
         if (request.StopDto.StopType == Domain.Enums.StopType.Terminus)
         {
-            var existingStops = await _unitOfWork.StopRepository.GetStopsByLineIdAsync(request.StopDto.LineId);
-            if (existingStops.Any(s => s.StopType == Domain.Enums.StopType.Terminus && s.Id != request.StopDto.Id))
+            // استخدام LineId من request.StopDto بدلاً من stop.LineId
+            var lineId = request.StopDto.LineId;
+            
+            if (lineId == 0)
             {
-                _logger.LogWarning("Cannot change stop {StopId} to Terminus; line {LineId} already has one.", request.StopDto.Id, request.StopDto.LineId);
-                throw new BadRequestException("This line already has a Terminus stop.");
+                throw new BadRequestException("Stop must have a valid line assignment.");
+            }
+
+            var existingStops = await _unitOfWork.StopRepository.GetStopsByLineIdAsync(lineId);
+            var existingTerminus = existingStops.FirstOrDefault(s => s.StopType == Domain.Enums.StopType.Terminus && s.Id != request.StopDto.Id);
+            
+            if (existingTerminus != null)
+            {
+                // تحويل الموقف النهائي القديم إلى وسطي
+                _logger.LogInformation("Converting existing Terminus stop {StopId} to Intermediate", existingTerminus.Id);
+                existingTerminus.StopType = Domain.Enums.StopType.Intermediate;
+                await _unitOfWork.StopRepository.UpdateAsync(existingTerminus);
             }
         }
 
-        _logger.LogInformation("Updating stop with ID: {StopId}", stop.Id);
-        
+        // تحديث المحطة الحالية
         _mapper.Map(request.StopDto, stop);
+        _logger.LogInformation("Updating stop ID: {StopId} with address: {Address}", stop.Id, stop.Address);
+
         await _unitOfWork.StopRepository.UpdateAsync(stop);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -5,11 +5,13 @@ using HIAST.Transportation.Application.Features.Bus.Commands.UpdateBus;
 using HIAST.Transportation.Application.Features.Bus.Queries.GetBusDetail;
 using HIAST.Transportation.Application.Features.Bus.Queries.GetBusList;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HIAST.Transportation.API.Controllers;
 
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class BusController : ControllerBase
 {
@@ -78,3 +80,4 @@ public class BusController : ControllerBase
         return NoContent();
     }
 }
+

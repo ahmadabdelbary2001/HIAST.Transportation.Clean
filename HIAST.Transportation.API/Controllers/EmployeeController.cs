@@ -5,11 +5,13 @@ using HIAST.Transportation.Application.Features.Employee.Commands.UpdateEmployee
 using HIAST.Transportation.Application.Features.Employee.Queries.GetEmployeeDetail;
 using HIAST.Transportation.Application.Features.Employee.Queries.GetEmployeeList;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HIAST.Transportation.API.Controllers;
 
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class EmployeeController : ControllerBase
 {
@@ -81,3 +83,4 @@ public class EmployeeController : ControllerBase
         return NoContent();
     }
 }
+

@@ -7,12 +7,12 @@ namespace HIAST.Transportation.Application.Features.Stop.Commands.DeleteStop;
 
 public class DeleteStopCommandHandler : IRequestHandler<DeleteStopCommand, Unit>
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IStopRepository _stopRepository;
     private readonly IAppLogger<DeleteStopCommandHandler> _logger;
 
-    public DeleteStopCommandHandler(IUnitOfWork unitOfWork, IAppLogger<DeleteStopCommandHandler> logger)
+    public DeleteStopCommandHandler(IStopRepository stopRepository, IAppLogger<DeleteStopCommandHandler> logger)
     {
-        _unitOfWork = unitOfWork;
+        _stopRepository = stopRepository;
         _logger = logger;
     }
 
@@ -20,20 +20,33 @@ public class DeleteStopCommandHandler : IRequestHandler<DeleteStopCommand, Unit>
     {
         _logger.LogInformation("Starting stop deletion process for ID: {StopId}", request.Id);
 
-        var stop = await _unitOfWork.StopRepository.GetByIdAsync(request.Id);
+        var stop = await _stopRepository.GetByIdAsync(request.Id);
         if (stop == null)
         {
-            _logger.LogWarning("Stop not found for deletion with ID: {StopId}", request.Id);
+            _logger.LogWarning("Stop with ID {StopId} not found", request.Id);
             throw new NotFoundException(nameof(Domain.Entities.Stop), request.Id);
         }
 
-        _logger.LogInformation("Deleting stop with ID: {StopId} and address: {Address}", 
-            stop.Id, stop.Address);
+        // التحقق من أن LineId ليس null
+        if (!stop.LineId.HasValue)
+        {
+            var exception = new BadRequestException("Stop must be assigned to a line before deletion.");
+            _logger.LogError(exception, "Stop with ID {StopId} has no Line assigned", request.Id);
+            throw exception;
+        }
 
-        await _unitOfWork.StopRepository.DeleteAsync(stop);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        var lineId = stop.LineId.Value; // استخدام .Value لأننا تأكدنا أنه ليس null
+        var deletedSequenceOrder = stop.SequenceOrder;
+        var wasTerminus = stop.StopType == Domain.Enums.StopType.Terminus;
 
-        _logger.LogInformation("Stop deleted successfully with ID: {StopId}", stop.Id);
+        // حذف المحطة
+        _logger.LogInformation("Deleting stop ID: {StopId}", stop.Id);
+        await _stopRepository.DeleteAsync(stop);
+
+        // استخدام الدالة الجديدة لإعادة الترتيب
+        await _stopRepository.ReorderStopsAfterDeletionAsync(lineId, deletedSequenceOrder, wasTerminus);
+
+        _logger.LogInformation("Stop deleted successfully and remaining stops reordered for line ID: {LineId}", lineId);
         return Unit.Value;
     }
 }

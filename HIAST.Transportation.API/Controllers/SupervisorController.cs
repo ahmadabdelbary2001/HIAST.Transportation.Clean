@@ -1,11 +1,13 @@
 using HIAST.Transportation.Application.DTOs.Supervisor;
 using HIAST.Transportation.Application.Features.Supervisor.Queries.GetSupervisorLineAssignments;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HIAST.Transportation.API.Controllers;
 
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class SupervisorController : ControllerBase
 {

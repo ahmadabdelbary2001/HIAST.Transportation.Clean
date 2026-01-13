@@ -5,11 +5,13 @@ using HIAST.Transportation.Application.Features.Driver.Commands.UpdateDriver;
 using HIAST.Transportation.Application.Features.Driver.Queries.GetDriverList;
 using HIAST.Transportation.Application.Features.Driver.Queries.GetDriverDetail;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HIAST.Transportation.API.Controllers;
 
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class DriverController : ControllerBase
 {
@@ -78,3 +80,4 @@ public class DriverController : ControllerBase
         return NoContent();
     }
 }
+

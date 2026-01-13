@@ -5,11 +5,13 @@ using HIAST.Transportation.Application.Features.LineSubscription.Commands.Update
 using HIAST.Transportation.Application.Features.LineSubscription.Queries.GetLineSubscriptionDetail;
 using HIAST.Transportation.Application.Features.LineSubscription.Queries.GetLineSubscriptionList;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HIAST.Transportation.API.Controllers;
 
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class LineSubscriptionController : ControllerBase
 {
@@ -78,3 +80,4 @@ public class LineSubscriptionController : ControllerBase
         return NoContent();
     }
 }
+

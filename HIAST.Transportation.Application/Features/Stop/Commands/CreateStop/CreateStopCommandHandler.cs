@@ -36,10 +36,14 @@ public class CreateStopCommandHandler : IRequestHandler<CreateStopCommand, int>
         if (request.StopDto.StopType == Domain.Enums.StopType.Terminus)
         {
             var existingStops = await _unitOfWork.StopRepository.GetStopsByLineIdAsync(request.StopDto.LineId);
-            if (existingStops.Any(s => s.StopType == Domain.Enums.StopType.Terminus))
+            var existingTerminus = existingStops.FirstOrDefault(s => s.StopType == Domain.Enums.StopType.Terminus);
+            
+            if (existingTerminus != null)
             {
-                _logger.LogWarning("Cannot add another Terminus stop to line {LineId}", request.StopDto.LineId);
-                throw new BadRequestException("This line already has a Terminus stop.");
+                // Convert the old Terminus to Intermediate since we're adding a new Terminus
+                _logger.LogInformation("Converting existing Terminus stop {StopId} to Intermediate", existingTerminus.Id);
+                existingTerminus.StopType = Domain.Enums.StopType.Intermediate;
+                await _unitOfWork.StopRepository.UpdateAsync(existingTerminus);
             }
         }
 

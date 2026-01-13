@@ -1,4 +1,5 @@
-using HIAST.Transportation.Domain.Entities;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore;
 
 namespace HIAST.Transportation.Application.Contracts.Persistence;
 
@@ -12,4 +13,6 @@ public interface IUnitOfWork : IDisposable
     ILineSubscriptionRepository LineSubscriptionRepository { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken =  default);
+    Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
+
 }

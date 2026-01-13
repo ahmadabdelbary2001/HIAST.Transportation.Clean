@@ -1,3 +1,4 @@
+using HIAST.Transportation.Application.Contracts.Identity;
 using HIAST.Transportation.Domain.Common;
 using HIAST.Transportation.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -6,8 +7,11 @@ namespace HIAST.Transportation.Persistence.DatabaseContext;
 
 public class TransportationDbContext : DbContext
 {
-    public TransportationDbContext(DbContextOptions<TransportationDbContext> options) : base(options)
+    private readonly IUserService _userService;
+
+    public TransportationDbContext(DbContextOptions<TransportationDbContext> options, IUserService userService) : base(options)
     {
+        _userService = userService;
     }
 
     public DbSet<Employee> Employees => Set<Employee>();
@@ -31,9 +35,11 @@ public class TransportationDbContext : DbContext
             {
                 case EntityState.Added:
                     entry.Entity.CreatedAt = DateTime.UtcNow;
+                    entry.Entity.CreatedBy = _userService.UserId;
                     break;
                 case EntityState.Modified:
                     entry.Entity.UpdatedAt = DateTime.UtcNow;
+                    entry.Entity.UpdatedBy = _userService.UserId;
                     break;
             }
         }

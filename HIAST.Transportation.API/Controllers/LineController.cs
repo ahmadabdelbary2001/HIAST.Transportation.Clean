@@ -5,11 +5,13 @@ using HIAST.Transportation.Application.Features.Line.Commands.UpdateLine;
 using HIAST.Transportation.Application.Features.Line.Queries.GetLineDetail;
 using HIAST.Transportation.Application.Features.Line.Queries.GetLineList;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HIAST.Transportation.API.Controllers;
 
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class LineController : ControllerBase
 {
@@ -79,3 +81,4 @@ public class LineController : ControllerBase
         return NoContent();
     }
 }
+

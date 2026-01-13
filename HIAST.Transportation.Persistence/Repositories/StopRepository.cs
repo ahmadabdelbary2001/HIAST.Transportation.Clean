@@ -34,4 +34,36 @@ public class StopRepository : GenericRepository<Stop>, IStopRepository
             .Include(s => s.Line) // Eagerly load the related Line
             .FirstOrDefaultAsync(s => s.Id == id);
     }
+
+    public async Task ReorderStopsAfterDeletionAsync(int lineId, int deletedSequenceOrder, bool wasTerminus)
+    {
+        var remainingStops = await _context.Stops
+            .Where(s => s.LineId == lineId && s.SequenceOrder > deletedSequenceOrder)
+            .OrderBy(s => s.SequenceOrder)
+            .ToListAsync();
+
+        // إعادة ترتيب المحطات التي بعد المحطة المحذوفة
+        foreach (var stop in remainingStops)
+        {
+            stop.SequenceOrder--;
+            _context.Stops.Update(stop);
+        }
+
+        // إذا كانت المحطة المحذوفة هي النهائية
+        if (wasTerminus)
+        {
+            var newLastStop = await _context.Stops
+                .Where(s => s.LineId == lineId)
+                .OrderByDescending(s => s.SequenceOrder)
+                .FirstOrDefaultAsync();
+
+            if (newLastStop != null && newLastStop.StopType != Domain.Enums.StopType.Terminus)
+            {
+                newLastStop.StopType = Domain.Enums.StopType.Terminus;
+                _context.Stops.Update(newLastStop);
+            }
+        }
+
+        await _context.SaveChangesAsync();
+    }
 }

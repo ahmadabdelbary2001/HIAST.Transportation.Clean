@@ -5,11 +5,13 @@ using HIAST.Transportation.Application.Features.Stop.Commands.UpdateStop;
 using HIAST.Transportation.Application.Features.Stop.Queries.GetStopDetail;
 using HIAST.Transportation.Application.Features.Stop.Queries.GetStopList;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HIAST.Transportation.API.Controllers;
 
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class StopController : ControllerBase
 {
@@ -77,4 +79,19 @@ public class StopController : ControllerBase
         await _mediator.Send(command);
         return NoContent();
     }
+
+    // PUT: api/Stop/reorder
+    [HttpPut("reorder")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ReorderStops([FromBody] Application.DTOs.Stop.ReorderStopsDto dto)
+    {
+        var command = new Application.Features.Stop.Commands.ReorderStops.ReorderStopsCommand 
+        { 
+            ReorderDto = dto 
+        };
+        await _mediator.Send(command);
+        return NoContent();
+    }
 }
+

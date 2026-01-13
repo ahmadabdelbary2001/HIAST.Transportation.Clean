@@ -7,4 +7,6 @@ public interface IStopRepository : IGenericRepository<Stop>
     Task<IReadOnlyList<Stop>> GetStopsByLineIdAsync(int lineId);
     Task<IReadOnlyList<Stop>> GetAllStopsWithDetailsAsync();
     Task<Stop?> GetStopWithDetailsAsync(int id);
+    Task ReorderStopsAfterDeletionAsync(int lineId, int deletedSequenceOrder, bool wasTerminus);
+
 }

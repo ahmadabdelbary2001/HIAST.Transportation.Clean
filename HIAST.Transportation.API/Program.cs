@@ -1,6 +1,10 @@
 using HIAST.Transportation.Application;
 using HIAST.Transportation.Infrastructure;
 using HIAST.Transportation.Persistence;
+using HIAST.Transportation.Identity;
+using HIAST.Transportation.Identity.DbContext;
+using HIAST.Transportation.Persistence.DatabaseContext;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddInfrastructureServices();
+builder.Services.AddIdentityServices(builder.Configuration);
 
 // Add services to the container.
 builder.Services.AddControllers()
@@ -18,7 +23,47 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      \r\n\r\nExample: 'Bearer 12345abcdef'",
+        Name = "Authorization",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement()
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+
+            },
+            new List<string>()
+        }
+    });
+
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Version = "v1",
+        Title = "HIAST Transportation API",
+
+    });
+});
 
 // Configure CORS
 builder.Services.AddCors(options =>
@@ -37,6 +82,19 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// Apply migrations on startup
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var identityContext = services.GetRequiredService<HIASTTransportationIdentityDbContext>();
+    await identityContext.Database.MigrateAsync();
+    
+    var persistenceContext = services.GetRequiredService<TransportationDbContext>();
+    await persistenceContext.Database.MigrateAsync();
+
+    await DbInitializer.SeedIdentityData(services);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -49,6 +107,7 @@ app.UseHttpsRedirection();
 // Add this to your app configuration (before UseAuthorization and UseEndpoints)
 app.UseCors("AllowReactApp");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

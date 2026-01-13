@@ -1,5 +1,6 @@
 using HIAST.Transportation.Application.Contracts.Persistence;
 using HIAST.Transportation.Persistence.DatabaseContext;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace HIAST.Transportation.Persistence.Repositories;
 
@@ -41,8 +42,14 @@ public class UnitOfWork : IUnitOfWork
         return await _context.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.Database.BeginTransactionAsync(cancellationToken);
+    }
+
     public void Dispose()
     {
         _context.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

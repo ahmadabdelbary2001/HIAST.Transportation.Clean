@@ -5,6 +5,7 @@ namespace HIAST.Transportation.Domain.Entities;
 
 public class Employee : AuditableEntity
 {
+    public string? UserId { get; set; }
     public string EmployeeNumber { get; set; } = string.Empty;
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
