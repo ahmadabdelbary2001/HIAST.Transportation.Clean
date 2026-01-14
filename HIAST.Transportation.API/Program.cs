@@ -6,6 +6,8 @@ using HIAST.Transportation.Identity.DbContext;
 using HIAST.Transportation.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using HIAST.Transportation.Api.Middleware;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -103,6 +105,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Add this to your app configuration (before UseAuthorization and UseEndpoints)
 app.UseCors("AllowReactApp");

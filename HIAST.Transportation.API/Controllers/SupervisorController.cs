@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HIAST.Transportation.API.Controllers;
 
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Roles = "Administrator")]
 [ApiController]
 public class SupervisorController : ControllerBase
 {
@@ -20,7 +20,6 @@ public class SupervisorController : ControllerBase
 
     // GET: api/Supervisor/LineAssignments
     [HttpGet("LineAssignments")]
-    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(typeof(IReadOnlyList<SupervisorLineDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<SupervisorLineDto>>> GetLineAssignments()
     {

@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace HIAST.Transportation.Identity.Models;
 
+/// <summary>
+/// Infrastructure-layer Identity entity. 
+/// Inherits from IdentityUser to integrate with ASP.NET Core Identity.
+/// </summary>
 public class ApplicationUser : IdentityUser
 {
     public string? FirstName { get; set; }

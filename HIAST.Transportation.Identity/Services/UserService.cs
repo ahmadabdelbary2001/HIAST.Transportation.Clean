@@ -33,6 +33,7 @@ public class UserService : IUserService
             FirstName = employee?.FirstName,
             LastName = employee?.LastName,
             UserName = employee?.UserName,
+            PhoneNumber = employee?.PhoneNumber,
             EmployeeNumber = employee?.EmployeeNumber,
             Department = employee?.Department
         };
@@ -48,6 +49,7 @@ public class UserService : IUserService
             FirstName = q.FirstName,
             LastName = q.LastName,
             UserName = q.UserName,
+            PhoneNumber = q.PhoneNumber,
             EmployeeNumber = q.EmployeeNumber,
             Department = q.Department
         }).ToList();
@@ -61,6 +63,7 @@ public class UserService : IUserService
             user.FirstName = employee.FirstName;
             user.LastName = employee.LastName;
             user.UserName = employee.UserName; // Assuming we allow username update, otherwise remove this line.
+            user.PhoneNumber = employee.PhoneNumber;
             user.EmployeeNumber = employee.EmployeeNumber;
             user.Department = employee.Department;
 

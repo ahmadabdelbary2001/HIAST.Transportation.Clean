@@ -10,5 +10,16 @@ public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
         // Seeding moved to DbInitializer to avoid dynamic model changes error in EF Core 9
+
+        builder.Property(x => x.FirstName)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        builder.Property(x => x.LastName)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        builder.Property(x => x.EmployeeNumber)
+            .HasMaxLength(20);
     }
 }

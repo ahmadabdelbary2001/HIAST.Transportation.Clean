@@ -36,6 +36,7 @@ public class LineSubscriptionConfiguration : IEntityTypeConfiguration<LineSubscr
         builder.HasOne(ls => ls.Line)
             .WithMany(l => l.LineSubscriptions)
             .HasForeignKey(ls => ls.LineId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade)
+            .HasConstraintName("FK_LineSubscription_Line");
     }
 }

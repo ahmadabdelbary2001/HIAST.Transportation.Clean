@@ -72,6 +72,7 @@ public class AuthService : IAuthService
             LastName = request.LastName,
             UserName = request.UserName,
             EmployeeNumber = request.EmployeeNumber,
+            PhoneNumber = request.PhoneNumber,
             Department = request.Department,
             EmailConfirmed = true
         };
@@ -100,6 +101,7 @@ public class AuthService : IAuthService
         var userClaims = await _userManager.GetClaimsAsync(user);
         var roles = await _userManager.GetRolesAsync(user);
 
+        var roleIdClaims = roles.Select(q => new Claim("role", q)).ToList();
         var roleClaims = roles.Select(q => new Claim(ClaimTypes.Role, q)).ToList();
 
         var claims = new[]
@@ -107,9 +109,12 @@ public class AuthService : IAuthService
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim("name", user.UserName),
                 new Claim("uid", user.Id)
             }
             .Union(userClaims)
+            .Union(roleIdClaims)
             .Union(roleClaims);
 
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));

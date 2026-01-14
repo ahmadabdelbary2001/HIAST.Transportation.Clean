@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HIAST.Transportation.API.Controllers;
 
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Roles = "Administrator")]
 [ApiController]
 public class LineSubscriptionController : ControllerBase
 {
@@ -22,9 +22,8 @@ public class LineSubscriptionController : ControllerBase
         _mediator = mediator;
     }
 
-    // GET: api/LineSubscriptions
+    // GET: api/LineSubscription
     [HttpGet]
-    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(typeof(List<LineSubscriptionListDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<LineSubscriptionListDto>>> Get()
     {
@@ -70,9 +69,8 @@ public class LineSubscriptionController : ControllerBase
         return NoContent();
     }
 
-    // DELETE: api/LineSubscriptions/5
+    // DELETE: api/LineSubscription/5
     [HttpDelete("{id:int}")]
-    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)

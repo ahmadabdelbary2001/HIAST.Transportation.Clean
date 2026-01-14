@@ -38,5 +38,12 @@ public static class DbInitializer
             await userManager.CreateAsync(adminUser, "P@ssword1");
             await userManager.AddToRoleAsync(adminUser, "Administrator");
         }
+        else
+        {
+            if (!await userManager.IsInRoleAsync(adminUser, "Administrator"))
+            {
+                await userManager.AddToRoleAsync(adminUser, "Administrator");
+            }
+        }
     }
 }

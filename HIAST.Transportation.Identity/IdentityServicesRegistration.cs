@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using HIAST.Transportation.Application.Contracts.Identity;
 using HIAST.Transportation.Application.Models.Identity;
@@ -25,7 +26,14 @@ public static class IdentityServicesRegistration
             options.UseSqlServer(configuration.GetConnectionString("TransportationConnectionString"))
                    .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)));
 
-        services.AddIdentity<ApplicationUser, IdentityRole>()
+        services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+        {
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequiredLength = 8;
+        })
             .AddEntityFrameworkStores<HIASTTransportationIdentityDbContext>().AddDefaultTokenProviders();
 
         services.AddTransient<IAuthService, AuthService>();
@@ -46,7 +54,9 @@ public static class IdentityServicesRegistration
                 ClockSkew = TimeSpan.Zero,
                 ValidIssuer = configuration["JwtSettings:Issuer"],
                 ValidAudience = configuration["JwtSettings:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"])),
+                NameClaimType = ClaimTypes.Name,
+                RoleClaimType = ClaimTypes.Role
             };
         });
         return services;
