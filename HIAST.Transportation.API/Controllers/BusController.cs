@@ -71,6 +71,7 @@ public class BusController : ControllerBase
 
     // DELETE: api/Bus/5
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)

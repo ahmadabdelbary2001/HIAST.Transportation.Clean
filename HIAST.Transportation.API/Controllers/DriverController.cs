@@ -71,6 +71,7 @@ public class DriverController : ControllerBase
 
     // DELETE: api/Driver/5
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
