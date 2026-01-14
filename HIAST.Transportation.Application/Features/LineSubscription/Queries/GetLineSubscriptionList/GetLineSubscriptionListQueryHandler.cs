@@ -38,7 +38,7 @@ public class GetLineSubscriptionListQueryHandler : IRequestHandler<GetLineSubscr
                 var user = await _userService.GetEmployee(sub.EmployeeUserId);
                 if (user != null)
                 {
-                    dto.EmployeeName = $"{user.Firstname} {user.Lastname}";
+                    dto.EmployeeName = $"{user.FirstName} {user.LastName}";
                 }
             }
         }

@@ -10,10 +10,12 @@ namespace HIAST.Transportation.API.Controllers;
 public class EmployeeController : ControllerBase
 {
     private readonly Application.Contracts.Identity.IUserService _userService;
+    private readonly Application.Contracts.Persistence.IUnitOfWork _unitOfWork;
 
-    public EmployeeController(Application.Contracts.Identity.IUserService userService)
+    public EmployeeController(Application.Contracts.Identity.IUserService userService, Application.Contracts.Persistence.IUnitOfWork unitOfWork)
     {
         _userService = userService;
+        _unitOfWork = unitOfWork;
     }
 
     // GET: api/Employee
@@ -22,6 +24,27 @@ public class EmployeeController : ControllerBase
     public async Task<ActionResult<List<HIAST.Transportation.Application.Models.Identity.Employee>>> Get()
     {
         var employees = await _userService.GetEmployees();
+        
+        // Hydrate with subscription info
+        foreach (var employee in employees)
+        {
+             if (!string.IsNullOrEmpty(employee.Id))
+             {
+                 var subscriptions = await _unitOfWork.LineSubscriptionRepository.GetSubscriptionsByEmployeeIdAsync(employee.Id);
+                 var activeSubscription = subscriptions.FirstOrDefault(s => s.IsActive);
+                 if (activeSubscription != null)
+                 {
+                     employee.LineSubscriptionId = activeSubscription.Id;
+                     employee.SubscribedLineId = activeSubscription.LineId;
+                     employee.IsSubscriptionActive = true;
+
+                     // Fetch Line Name
+                     var line = await _unitOfWork.LineRepository.GetByIdAsync(activeSubscription.LineId);
+                     employee.SubscribedLineName = line?.Name;
+                 }
+             }
+        }
+
         return Ok(employees);
     }
 
@@ -33,6 +56,20 @@ public class EmployeeController : ControllerBase
     {
         var employee = await _userService.GetEmployee(userId);
         if (employee == null) return NotFound();
+
+        // Hydrate with subscription info
+        var subscriptions = await _unitOfWork.LineSubscriptionRepository.GetSubscriptionsByEmployeeIdAsync(userId);
+        var activeSubscription = subscriptions.FirstOrDefault(s => s.IsActive);
+        if (activeSubscription != null)
+        {
+            employee.LineSubscriptionId = activeSubscription.Id;
+            employee.SubscribedLineId = activeSubscription.LineId;
+            employee.IsSubscriptionActive = true;
+
+            var line = await _unitOfWork.LineRepository.GetByIdAsync(activeSubscription.LineId);
+            employee.SubscribedLineName = line?.Name;
+        }
+
         return Ok(employee);
     }
 

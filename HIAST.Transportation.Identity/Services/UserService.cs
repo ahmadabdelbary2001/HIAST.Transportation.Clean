@@ -30,8 +30,9 @@ public class UserService : IUserService
         {
             Email = employee?.Email,
             Id = employee?.Id,
-            Firstname = employee?.FirstName,
-            Lastname = employee?.LastName,
+            FirstName = employee?.FirstName,
+            LastName = employee?.LastName,
+            UserName = employee?.UserName,
             EmployeeNumber = employee?.EmployeeNumber,
             Department = employee?.Department
         };
@@ -44,8 +45,9 @@ public class UserService : IUserService
         {
             Id = q.Id,
             Email = q.Email,
-            Firstname = q.FirstName,
-            Lastname = q.LastName,
+            FirstName = q.FirstName,
+            LastName = q.LastName,
+            UserName = q.UserName,
             EmployeeNumber = q.EmployeeNumber,
             Department = q.Department
         }).ToList();
@@ -56,8 +58,9 @@ public class UserService : IUserService
         var user = await _userManager.FindByIdAsync(employee.Id);
         if (user != null)
         {
-            user.FirstName = employee.Firstname;
-            user.LastName = employee.Lastname;
+            user.FirstName = employee.FirstName;
+            user.LastName = employee.LastName;
+            user.UserName = employee.UserName; // Assuming we allow username update, otherwise remove this line.
             user.EmployeeNumber = employee.EmployeeNumber;
             user.Department = employee.Department;
 

@@ -42,7 +42,7 @@ public class GetLineDetailQueryHandler : IRequestHandler<GetLineDetailQuery, Lin
             var user = await _userService.GetEmployee(line.SupervisorId);
             if (user != null)
             {
-                dto.SupervisorName = $"{user.Firstname} {user.Lastname}";
+                dto.SupervisorName = $"{user.FirstName} {user.LastName}";
             }
         }
 
@@ -55,7 +55,7 @@ public class GetLineDetailQueryHandler : IRequestHandler<GetLineDetailQuery, Lin
                  var user = await _userService.GetEmployee(subEntity.EmployeeUserId);
                  if (user != null)
                  {
-                     sub.EmployeeName = $"{user.Firstname} {user.Lastname}";
+                     sub.EmployeeName = $"{user.FirstName} {user.LastName}";
                  }
              }
         }

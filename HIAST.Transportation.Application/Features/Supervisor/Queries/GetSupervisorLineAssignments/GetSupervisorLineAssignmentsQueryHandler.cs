@@ -35,7 +35,7 @@ public class GetSupervisorLineAssignmentsQueryHandler : IRequestHandler<GetSuper
                  {
                      EmployeeId = line.SupervisorId,
                      EmployeeNumber = user.EmployeeNumber ?? string.Empty,
-                     EmployeeName = $"{user.Firstname} {user.Lastname}",
+                     EmployeeName = $"{user.FirstName} {user.LastName}",
                      LineId = line.Id,
                      LineName = line.Name
                  });

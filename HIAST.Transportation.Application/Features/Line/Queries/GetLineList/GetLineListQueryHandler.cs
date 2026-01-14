@@ -39,7 +39,7 @@ public class GetLineListQueryHandler : IRequestHandler<GetLineListQuery, List<Li
                 var user = await _userService.GetEmployee(line.SupervisorId);
                 if (user != null)
                 {
-                    dto.SupervisorName = $"{user.Firstname} {user.Lastname}";
+                    dto.SupervisorName = $"{user.FirstName} {user.LastName}";
                 }
             }
         }
