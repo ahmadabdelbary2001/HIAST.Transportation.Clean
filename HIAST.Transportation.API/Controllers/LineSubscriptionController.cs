@@ -24,6 +24,7 @@ public class LineSubscriptionController : ControllerBase
 
     // GET: api/LineSubscriptions
     [HttpGet]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(typeof(List<LineSubscriptionListDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<LineSubscriptionListDto>>> Get()
     {
@@ -71,6 +72,7 @@ public class LineSubscriptionController : ControllerBase
 
     // DELETE: api/LineSubscriptions/5
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)

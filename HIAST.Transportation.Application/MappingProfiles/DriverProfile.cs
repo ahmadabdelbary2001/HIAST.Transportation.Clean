@@ -19,10 +19,10 @@ public class DriverProfile : Profile
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.Driver.CreatedAt))
             .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.Driver.UpdatedAt))
             // Map properties from the joined Line and Bus objects (they can be null)
-            .ForMember(dest => dest.LineId, opt => opt.MapFrom(src => src.Line.Id))
-            .ForMember(dest => dest.LineName, opt => opt.MapFrom(src => src.Line.Name))
-            .ForMember(dest => dest.BusId, opt => opt.MapFrom(src => src.Line.BusId))
-            .ForMember(dest => dest.BusLicensePlate, opt => opt.MapFrom(src => src.Bus.LicensePlate));
+            .ForMember(dest => dest.LineId, opt => opt.MapFrom(src => src.Line != null ? src.Line.Id : (int?)null))
+            .ForMember(dest => dest.LineName, opt => opt.MapFrom(src => src.Line != null ? src.Line.Name : null))
+            .ForMember(dest => dest.BusId, opt => opt.MapFrom(src => src.Line != null ? src.Line.BusId : (int?)null))
+            .ForMember(dest => dest.BusLicensePlate, opt => opt.MapFrom(src => src.Bus != null ? src.Bus.LicensePlate : null));
         
         CreateMap<Driver, DriverListDto>();
         

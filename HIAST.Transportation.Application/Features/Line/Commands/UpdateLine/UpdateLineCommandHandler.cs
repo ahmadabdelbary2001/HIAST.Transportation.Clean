@@ -65,7 +65,7 @@ public class UpdateLineCommandHandler : IRequestHandler<UpdateLineCommand, Unit>
         {
             // Deactivate old supervisor's subscription
             var activeSubscriptions = await _unitOfWork.LineSubscriptionRepository.GetSubscriptionsByLineIdAsync(line.Id);
-            var oldSubscription = activeSubscriptions.FirstOrDefault(s => s.EmployeeId == line.SupervisorId && s.IsActive);
+            var oldSubscription = activeSubscriptions.FirstOrDefault(s => s.EmployeeUserId == line.SupervisorId && s.IsActive);
             
             if (oldSubscription != null)
             {
@@ -82,7 +82,7 @@ public class UpdateLineCommandHandler : IRequestHandler<UpdateLineCommand, Unit>
             await _unitOfWork.LineSubscriptionRepository.CreateAsync(new Domain.Entities.LineSubscription
             {
                 LineId = line.Id,
-                EmployeeId = request.LineDto.SupervisorId,
+                EmployeeUserId = request.LineDto.SupervisorId,
                 StartDate = DateTime.UtcNow,
                 IsActive = true
             });

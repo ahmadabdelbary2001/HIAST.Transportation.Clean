@@ -43,6 +43,7 @@ public class DriverController : ControllerBase
 
     // POST: api/Driver
     [HttpPost]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<int>> Post([FromBody] CreateDriverDto createDto)
@@ -54,6 +55,7 @@ public class DriverController : ControllerBase
 
     // PUT: api/Driver/5
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

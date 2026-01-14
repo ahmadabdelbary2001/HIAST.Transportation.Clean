@@ -33,10 +33,6 @@ public class LineConfiguration : IEntityTypeConfiguration<Line>
         builder.HasIndex(l => l.DriverId);
 
         // Relationships
-        builder.HasOne(l => l.Supervisor)
-            .WithMany()
-            .HasForeignKey(l => l.SupervisorId)
-            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(l => l.Bus)
             .WithMany()

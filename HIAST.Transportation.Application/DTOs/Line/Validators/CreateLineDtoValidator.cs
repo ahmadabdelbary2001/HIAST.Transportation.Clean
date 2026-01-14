@@ -19,7 +19,7 @@ public class CreateLineDtoValidator : AbstractValidator<CreateLineDto>
             .MaximumLength(1000).WithMessage("{PropertyName} must not exceed 1000 characters");
 
         RuleFor(x => x.SupervisorId)
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0")
+            .NotEmpty().WithMessage("{PropertyName} is required")
             .MustAsync(async (supervisorId, cancellationToken) => !await _lineRepository.IsSupervisorAssignedAsync(supervisorId))
             .WithMessage("Supervisor is already assigned to another line.");
 

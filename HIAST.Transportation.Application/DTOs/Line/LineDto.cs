@@ -6,7 +6,7 @@ namespace HIAST.Transportation.Application.DTOs.Line;
 public class LineDto
 {
     public int Id { get; set; }
-    public int SupervisorId { get; set; }
+    public string SupervisorId { get; set; } = string.Empty;
     public string SupervisorName { get; set; } = string.Empty;
     public int BusId { get; set; }
     public string BusLicensePlate { get; set; } = string.Empty;

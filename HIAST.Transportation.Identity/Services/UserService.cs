@@ -28,10 +28,12 @@ public class UserService : IUserService
         var employee = await _userManager.FindByIdAsync(userId);
         return new Employee
         {
-            Email = employee.Email,
-            Id = employee.Id,
-            Firstname = employee.FirstName,
-            Lastname = employee.LastName
+            Email = employee?.Email,
+            Id = employee?.Id,
+            Firstname = employee?.FirstName,
+            Lastname = employee?.LastName,
+            EmployeeNumber = employee?.EmployeeNumber,
+            Department = employee?.Department
         };
     }
 
@@ -43,7 +45,32 @@ public class UserService : IUserService
             Id = q.Id,
             Email = q.Email,
             Firstname = q.FirstName,
-            Lastname = q.LastName
+            Lastname = q.LastName,
+            EmployeeNumber = q.EmployeeNumber,
+            Department = q.Department
         }).ToList();
+    }
+
+    public async Task UpdateEmployee(Employee employee)
+    {
+        var user = await _userManager.FindByIdAsync(employee.Id);
+        if (user != null)
+        {
+            user.FirstName = employee.Firstname;
+            user.LastName = employee.Lastname;
+            user.EmployeeNumber = employee.EmployeeNumber;
+            user.Department = employee.Department;
+
+            await _userManager.UpdateAsync(user);
+        }
+    }
+
+    public async Task DeleteEmployee(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user != null)
+        {
+            await _userManager.DeleteAsync(user);
+        }
     }
 }

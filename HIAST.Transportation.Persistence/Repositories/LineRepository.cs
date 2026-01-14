@@ -11,11 +11,11 @@ public class LineRepository : GenericRepository<Line>, ILineRepository
     {
     }
 
-    public async Task<IReadOnlyList<Line>> GetLinesBySupervisorIdAsync(int supervisorId)
+    public async Task<IReadOnlyList<Line>> GetLinesBySupervisorIdAsync(string supervisorId)
     {
         return await _context.Lines
             .Where(l => l.SupervisorId == supervisorId)
-            .Include(l => l.Supervisor)
+            // .Include(l => l.Supervisor) // Removed
             .Include(l => l.Bus)
             .Include(l => l.Driver)
             .ToListAsync();
@@ -24,19 +24,19 @@ public class LineRepository : GenericRepository<Line>, ILineRepository
     public async Task<Line?> GetLineWithDetailsAsync(int lineId) // Renamed for clarity
     {
         return await _context.Lines
-            .Include(l => l.Supervisor)
+            // .Include(l => l.Supervisor) // Removed
             .Include(l => l.Bus)
             .Include(l => l.Driver)
             .Include(l => l.Stops.OrderBy(s => s.SequenceOrder))
             .Include(l => l.LineSubscriptions)
-            .ThenInclude(ls => ls.Employee) // Essential for getting the EmployeeName
+            // .ThenInclude(ls => ls.Employee) // Removed
             .FirstOrDefaultAsync(l => l.Id == lineId);
     }
     
     public async Task<IReadOnlyList<Line>> GetAllLinesWithSupervisorDetailsAsync()
     {
         return await _context.Lines
-            .Include(l => l.Supervisor) // Eagerly load the Supervisor navigation property.
+            // .Include(l => l.Supervisor) // Removed
             .AsNoTracking()             // Use for read-only queries to boost performance.
             .ToListAsync();
     }
@@ -61,7 +61,7 @@ public class LineRepository : GenericRepository<Line>, ILineRepository
         return await query.AnyAsync(l => l.DriverId == driverId);
     }
 
-    public async Task<bool> IsSupervisorAssignedAsync(int supervisorId, int? excludeLineId = null)
+    public async Task<bool> IsSupervisorAssignedAsync(string supervisorId, int? excludeLineId = null)
     {
         var query = _context.Lines.AsQueryable();
         if (excludeLineId.HasValue)

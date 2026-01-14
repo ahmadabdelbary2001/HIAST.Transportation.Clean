@@ -71,6 +71,8 @@ public class AuthService : IAuthService
             FirstName = request.FirstName,
             LastName = request.LastName,
             UserName = request.UserName,
+            EmployeeNumber = request.EmployeeNumber,
+            Department = request.Department,
             EmailConfirmed = true
         };
 

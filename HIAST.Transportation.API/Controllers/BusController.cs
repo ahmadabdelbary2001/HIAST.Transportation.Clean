@@ -43,6 +43,7 @@ public class BusController : ControllerBase
 
     // POST: api/Bus
     [HttpPost]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<int>> Post([FromBody] CreateBusDto createDto)
@@ -54,6 +55,7 @@ public class BusController : ControllerBase
 
     // PUT: api/Bus/5
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

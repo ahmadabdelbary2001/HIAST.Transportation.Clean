@@ -5,7 +5,7 @@ namespace HIAST.Transportation.Application.Contracts.Persistence;
 
 public interface IUnitOfWork : IDisposable
 {
-    IEmployeeRepository EmployeeRepository { get; }
+    // IEmployeeRepository EmployeeRepository { get; } // Removed
     IDriverRepository DriverRepository { get; }
     IBusRepository BusRepository { get; }
     IStopRepository StopRepository { get; }

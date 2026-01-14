@@ -43,6 +43,7 @@ public class StopController : ControllerBase
 
     // POST: api/Stops
     [HttpPost]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<int>> Post([FromBody] CreateStopDto createDto)
@@ -54,6 +55,7 @@ public class StopController : ControllerBase
 
     // PUT: api/Stops/5
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -71,6 +73,7 @@ public class StopController : ControllerBase
 
     // DELETE: api/Stops/5
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
@@ -82,6 +85,7 @@ public class StopController : ControllerBase
 
     // PUT: api/Stop/reorder
     [HttpPut("reorder")]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ReorderStops([FromBody] Application.DTOs.Stop.ReorderStopsDto dto)

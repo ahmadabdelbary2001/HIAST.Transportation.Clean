@@ -9,11 +9,13 @@ public class GetSupervisorLineAssignmentsQueryHandler : IRequestHandler<GetSuper
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly Application.Contracts.Identity.IUserService _userService;
 
-    public GetSupervisorLineAssignmentsQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public GetSupervisorLineAssignmentsQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, Application.Contracts.Identity.IUserService userService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _userService = userService;
     }
 
     public async Task<IReadOnlyList<SupervisorLineDto>> Handle(GetSupervisorLineAssignmentsQuery request, CancellationToken cancellationToken)
@@ -21,16 +23,24 @@ public class GetSupervisorLineAssignmentsQueryHandler : IRequestHandler<GetSuper
         // 1. Fetch all lines with their supervisor details using the dedicated repository method.
         var lines = await _unitOfWork.LineRepository.GetAllLinesWithSupervisorDetailsAsync();
 
-        // 2. Map the entities to the DTO.
-        // We will perform the mapping manually here for clarity and to construct the EmployeeName.
-        var report = lines.Select(line => new SupervisorLineDto
+        var report = new List<SupervisorLineDto>();
+        foreach (var line in lines)
         {
-            EmployeeId = line.Supervisor.Id,
-            EmployeeNumber = line.Supervisor.EmployeeNumber,
-            EmployeeName = $"{line.Supervisor.FirstName} {line.Supervisor.LastName}",
-            LineId = line.Id,
-            LineName = line.Name
-        }).ToList();
+            if (string.IsNullOrEmpty(line.SupervisorId)) continue;
+             
+             var user = await _userService.GetEmployee(line.SupervisorId);
+             if (user != null)
+             {
+                 report.Add(new SupervisorLineDto
+                 {
+                     EmployeeId = line.SupervisorId,
+                     EmployeeNumber = user.EmployeeNumber ?? string.Empty,
+                     EmployeeName = $"{user.Firstname} {user.Lastname}",
+                     LineId = line.Id,
+                     LineName = line.Name
+                 });
+             }
+        }
 
         return report;
     }

@@ -14,7 +14,7 @@ public class TransportationDbContext : DbContext
         _userService = userService;
     }
 
-    public DbSet<Employee> Employees => Set<Employee>();
+    // public DbSet<Employee> Employees => Set<Employee>(); // Removed
     public DbSet<Driver> Drivers => Set<Driver>();
     public DbSet<Bus> Buses => Set<Bus>();
     public DbSet<Stop> Stops => Set<Stop>();

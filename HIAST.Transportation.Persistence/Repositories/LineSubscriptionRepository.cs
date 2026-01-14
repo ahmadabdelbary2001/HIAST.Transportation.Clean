@@ -11,11 +11,11 @@ public class LineSubscriptionRepository : GenericRepository<LineSubscription>, I
     {
     }
 
-    public async Task<IReadOnlyList<LineSubscription>> GetSubscriptionsByEmployeeIdAsync(int employeeId)
+    public async Task<IReadOnlyList<LineSubscription>> GetSubscriptionsByEmployeeIdAsync(string employeeId)
     {
         return await _context.LineSubscriptions
-            .Where(ls => ls.EmployeeId == employeeId)
-            .Include(ls => ls.Employee)
+            .Where(ls => ls.EmployeeUserId == employeeId)
+            // .Include(ls => ls.Employee) // Removed
             .Include(ls => ls.Line)
             .AsNoTracking()
             .ToListAsync();
@@ -25,7 +25,7 @@ public class LineSubscriptionRepository : GenericRepository<LineSubscription>, I
     {
         return await _context.LineSubscriptions
             .Where(ls => ls.LineId == lineId)
-            .Include(ls => ls.Employee)
+            // .Include(ls => ls.Employee) // Removed
             .Include(ls => ls.Line)
             .AsNoTracking()
             .ToListAsync();
@@ -36,7 +36,7 @@ public class LineSubscriptionRepository : GenericRepository<LineSubscription>, I
         var currentDate = DateTime.UtcNow;
         return await _context.LineSubscriptions
             .Where(ls => ls.StartDate <= currentDate && (ls.EndDate == null || ls.EndDate >= currentDate))
-            .Include(ls => ls.Employee)
+            // .Include(ls => ls.Employee) // Removed
             .Include(ls => ls.Line)
             .AsNoTracking()
             .ToListAsync();
@@ -45,7 +45,7 @@ public class LineSubscriptionRepository : GenericRepository<LineSubscription>, I
     public async Task<LineSubscription?> GetLineSubscriptionWithDetailsAsync(int id)
     {
         return await _context.LineSubscriptions
-            .Include(ls => ls.Employee) // Eagerly load the related Employee
+            // .Include(ls => ls.Employee) // Removed
             .Include(ls => ls.Line)     // Eagerly load the related Line
             .FirstOrDefaultAsync(ls => ls.Id == id);
     }
@@ -53,21 +53,21 @@ public class LineSubscriptionRepository : GenericRepository<LineSubscription>, I
     public async Task<IReadOnlyList<LineSubscription>> GetAllLineSubscriptionsWithDetailsAsync()
     {
         return await _context.LineSubscriptions
-            .Include(ls => ls.Employee) // Eagerly load the related Employee
+            // .Include(ls => ls.Employee) // Removed
             .Include(ls => ls.Line)     // Eagerly load the related Line
             .AsNoTracking()             // Use for read-only queries
             .ToListAsync();
     }
 
-    public async Task<bool> IsEmployeeSubscribedAsync(int employeeId)
+    public async Task<bool> IsEmployeeSubscribedAsync(string employeeId)
     {
         return await _context.LineSubscriptions
-            .AnyAsync(ls => ls.EmployeeId == employeeId && ls.IsActive);
+            .AnyAsync(ls => ls.EmployeeUserId == employeeId && ls.IsActive);
     }
 
-    public async Task<bool> HasAnySubscriptionAsync(int employeeId)
+    public async Task<bool> HasAnySubscriptionAsync(string employeeId)
     {
         return await _context.LineSubscriptions
-            .AnyAsync(ls => ls.EmployeeId == employeeId);
+            .AnyAsync(ls => ls.EmployeeUserId == employeeId);
     }
 }

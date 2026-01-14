@@ -53,7 +53,7 @@ public class CreateLineSubscriptionCommandHandler : IRequestHandler<CreateLineSu
         var lineSubscription = _mapper.Map<Domain.Entities.LineSubscription>(request.LineSubscriptionDto);
         
         _logger.LogInformation("Creating line subscription for line ID: {LineId} and employee ID: {EmployeeId}", 
-            lineSubscription.LineId, lineSubscription.EmployeeId);
+            lineSubscription.LineId, lineSubscription.EmployeeUserId);
 
         await _unitOfWork.LineSubscriptionRepository.CreateAsync(lineSubscription);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

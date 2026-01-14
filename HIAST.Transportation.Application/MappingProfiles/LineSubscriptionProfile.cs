@@ -10,15 +10,16 @@ public class LineSubscriptionProfile : Profile
     {
         // Maps for reading data
         CreateMap<LineSubscription, LineSubscriptionDto>()
-            .ForMember(dest => dest.EmployeeName, opt => opt.MapFrom(src => $"{src.Employee.FirstName} {src.Employee.LastName}"))
+            .ForMember(dest => dest.EmployeeId, opt => opt.MapFrom(src => src.EmployeeUserId))
             .ForMember(dest => dest.LineName, opt => opt.MapFrom(src => src.Line.Name));
             
         CreateMap<LineSubscription, LineSubscriptionListDto>()
-            .ForMember(dest => dest.EmployeeName, opt => opt.MapFrom(src => $"{src.Employee.FirstName} {src.Employee.LastName}"))
             .ForMember(dest => dest.LineName, opt => opt.MapFrom(src => src.Line.Name));
 
         // Maps for writing data
-        CreateMap<LineSubscription, CreateLineSubscriptionDto>().ReverseMap();
-        CreateMap<LineSubscription, UpdateLineSubscriptionDto>().ReverseMap();
+        CreateMap<CreateLineSubscriptionDto, LineSubscription>()
+            .ForMember(dest => dest.EmployeeUserId, opt => opt.MapFrom(src => src.EmployeeId));
+        CreateMap<UpdateLineSubscriptionDto, LineSubscription>()
+            .ForMember(dest => dest.EmployeeUserId, opt => opt.MapFrom(src => src.EmployeeId));
     }
 }

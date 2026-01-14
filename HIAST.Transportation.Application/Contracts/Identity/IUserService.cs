@@ -6,5 +6,7 @@ public interface IUserService
 {
     Task<List<Employee>> GetEmployees();
     Task<Employee> GetEmployee(string userId);
+    Task UpdateEmployee(Employee employee);
+    Task DeleteEmployee(string userId);
     public string UserId { get; }
 }

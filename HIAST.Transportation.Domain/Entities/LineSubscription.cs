@@ -10,10 +10,10 @@ public class LineSubscription : AuditableEntity
     public DateTime? EndDate { get; set; }
 
     // Foreign Keys
-    public int EmployeeId { get; set; }
+    public string EmployeeUserId { get; set; } = string.Empty;
     public int LineId { get; set; }
 
     // Navigation Properties
-    public Employee Employee { get; set; } = null!;
+    // public Employee Employee { get; set; } = null!; // Removed
     public Line Line { get; set; } = null!;
 }

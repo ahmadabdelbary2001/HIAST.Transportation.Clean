@@ -43,6 +43,7 @@ public class LineController : ControllerBase
 
     // POST: api/Lines
     [HttpPost]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<int>> Post([FromBody] CreateLineDto createDto)
@@ -54,6 +55,7 @@ public class LineController : ControllerBase
 
     // PUT: api/Lines/5
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -72,6 +74,7 @@ public class LineController : ControllerBase
 
     // DELETE: api/Lines/5
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)

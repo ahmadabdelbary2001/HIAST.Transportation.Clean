@@ -12,9 +12,9 @@ public class SupervisorProfile : Profile
         // Note: The handler performs a manual select for efficiency and to construct EmployeeName.
         CreateMap<Line, SupervisorLineDto>()
             .ForMember(dest => dest.EmployeeId, opt => opt.MapFrom(src => src.SupervisorId))
-            .ForMember(dest => dest.EmployeeNumber, opt => opt.MapFrom(src => src.Supervisor.EmployeeNumber))
-            .ForMember(dest => dest.EmployeeName, opt => opt.MapFrom(src => src.Supervisor.FirstName + " " + src.Supervisor.LastName))
             .ForMember(dest => dest.LineId, opt => opt.MapFrom(src => src.Id))
-            .ForMember(dest => dest.LineName, opt => opt.MapFrom(src => src.Name));
+            .ForMember(dest => dest.LineName, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.EmployeeNumber, opt => opt.Ignore())
+            .ForMember(dest => dest.EmployeeName, opt => opt.Ignore());
     }
 }

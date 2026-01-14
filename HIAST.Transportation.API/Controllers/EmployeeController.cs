@@ -1,9 +1,3 @@
-using HIAST.Transportation.Application.DTOs.Employee;
-using HIAST.Transportation.Application.Features.Employee.Commands.CreateEmployee;
-using HIAST.Transportation.Application.Features.Employee.Commands.DeleteEmployee;
-using HIAST.Transportation.Application.Features.Employee.Commands.UpdateEmployee;
-using HIAST.Transportation.Application.Features.Employee.Queries.GetEmployeeDetail;
-using HIAST.Transportation.Application.Features.Employee.Queries.GetEmployeeList;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,71 +9,59 @@ namespace HIAST.Transportation.API.Controllers;
 [ApiController]
 public class EmployeeController : ControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly Application.Contracts.Identity.IUserService _userService;
 
-    public EmployeeController(IMediator mediator)
+    public EmployeeController(Application.Contracts.Identity.IUserService userService)
     {
-        _mediator = mediator;
+        _userService = userService;
     }
 
     // GET: api/Employee
     [HttpGet]
-    [ProducesResponseType(typeof(List<EmployeeListDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<EmployeeListDto>>> Get()
+    [ProducesResponseType(typeof(List<HIAST.Transportation.Application.Models.Identity.Employee>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<HIAST.Transportation.Application.Models.Identity.Employee>>> Get()
     {
-        var query = new GetEmployeeListQuery();
-        var employees = await _mediator.Send(query);
+        var employees = await _userService.GetEmployees();
         return Ok(employees);
     }
 
-    // GET: api/Employee/5
-    [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(EmployeeDto), StatusCodes.Status200OK)]
+    // GET: api/Employee/detail?userId=xxx
+    [HttpGet("detail")]
+    [ProducesResponseType(typeof(HIAST.Transportation.Application.Models.Identity.Employee), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<EmployeeDto>> Get(int id)
+    public async Task<ActionResult<HIAST.Transportation.Application.Models.Identity.Employee>> GetByUserId([FromQuery] string userId)
     {
-        var query = new GetEmployeeDetailQuery { Id = id };
-        var employee = await _mediator.Send(query);
+        var employee = await _userService.GetEmployee(userId);
+        if (employee == null) return NotFound();
         return Ok(employee);
     }
 
     // POST: api/Employee
-    [HttpPost]
-    [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<int>> Post([FromBody] CreateEmployeeDto createDto)
-    {
-        var command = new CreateEmployeeCommand { EmployeeDto = createDto };
-        var employeeId = await _mediator.Send(command);
-        return CreatedAtAction(nameof(Get), new { id = employeeId }, employeeId);
-    }
-
-    // PUT: api/Employee/5
-    [HttpPut("{id:int}")]
+    // Note: Use Register endpoint usually, but if exposed:
+    // This is problematic without a specific Create method in IUserService distinct from Register.
+    // IUserService typically manages existing. Let's assume Register is used for creation. 
+    // I will comment out Post/Delete if IUserService doesn't support them fully or rely on AuthController.
+    // However, IUserService HAS UpdateEmployee and DeleteEmployee.
+    
+    [HttpPut]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Put(int id, [FromBody] UpdateEmployeeDto updateDto)
+    public async Task<IActionResult> Put([FromBody] HIAST.Transportation.Application.Models.Identity.Employee employee)
     {
-        // Ensure the ID from the route matches the ID in the body
-        if (id != updateDto.Id)
-        {
-            return BadRequest("ID mismatch between route and body.");
-        }
-
-        var command = new UpdateEmployeeCommand { EmployeeDto = updateDto };
-        await _mediator.Send(command);
+        await _userService.UpdateEmployee(employee);
         return NoContent();
     }
 
-    // DELETE: api/Employee/5
-    [HttpDelete("{id:int}")]
+    // DELETE: api/Employee/detail?userId=xxx
+    [HttpDelete("detail")]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> DeleteByUserId([FromQuery] string userId)
     {
-        var command = new DeleteEmployeeCommand { Id = id };
-        await _mediator.Send(command);
+        await _userService.DeleteEmployee(userId);
         return NoContent();
     }
 }

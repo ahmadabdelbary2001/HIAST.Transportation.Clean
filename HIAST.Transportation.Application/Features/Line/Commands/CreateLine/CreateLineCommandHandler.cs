@@ -48,7 +48,7 @@ public class CreateLineCommandHandler : IRequestHandler<CreateLineCommand, int>
         // Auto-subscribe Supervisor
         line.LineSubscriptions.Add(new Domain.Entities.LineSubscription
         {
-            EmployeeId = line.SupervisorId,
+            EmployeeUserId = line.SupervisorId,
             StartDate = DateTime.UtcNow,
             IsActive = true
         });

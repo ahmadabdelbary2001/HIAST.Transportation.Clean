@@ -10,7 +10,7 @@ public class LineSubscriptionConfiguration : IEntityTypeConfiguration<LineSubscr
     {
         builder.HasKey(ls => ls.Id);
 
-        builder.Property(ls => ls.EmployeeId)
+        builder.Property(ls => ls.EmployeeUserId)
             .IsRequired();
 
         builder.Property(ls => ls.LineId)
@@ -27,17 +27,11 @@ public class LineSubscriptionConfiguration : IEntityTypeConfiguration<LineSubscr
             .IsRequired(false);
 
         // Indexes
-        builder.HasIndex(ls => ls.EmployeeId);
-
+        builder.HasIndex(ls => ls.EmployeeUserId);
         builder.HasIndex(ls => ls.LineId);
-
-        builder.HasIndex(ls => new { ls.EmployeeId, ls.LineId, ls.StartDate });
+        builder.HasIndex(ls => new { ls.EmployeeUserId, ls.LineId, ls.StartDate });
 
         // Relationships
-        builder.HasOne(ls => ls.Employee)
-            .WithOne(e => e.Subscription)
-            .HasForeignKey<LineSubscription>(ls => ls.EmployeeId)
-            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(ls => ls.Line)
             .WithMany(l => l.LineSubscriptions)

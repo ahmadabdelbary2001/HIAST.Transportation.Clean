@@ -28,7 +28,7 @@ public class DeleteLineSubscriptionCommandHandler : IRequestHandler<DeleteLineSu
         }
 
         _logger.LogInformation("Deleting line subscription with ID: {LineSubscriptionId} for line ID: {LineId} and employee ID: {EmployeeId}", 
-            lineSubscription.Id, lineSubscription.LineId, lineSubscription.EmployeeId);
+            lineSubscription.Id, lineSubscription.LineId, lineSubscription.EmployeeUserId);
 
         await _unitOfWork.LineSubscriptionRepository.DeleteAsync(lineSubscription);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

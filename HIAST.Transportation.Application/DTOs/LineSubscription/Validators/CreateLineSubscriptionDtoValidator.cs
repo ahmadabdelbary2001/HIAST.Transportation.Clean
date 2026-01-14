@@ -7,7 +7,7 @@ public class CreateLineSubscriptionDtoValidator : AbstractValidator<CreateLineSu
     public CreateLineSubscriptionDtoValidator()
     {
         RuleFor(x => x.EmployeeId)
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0");
+            .NotEmpty().WithMessage("{PropertyName} is required");
 
         RuleFor(x => x.LineId)
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0");

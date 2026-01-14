@@ -20,6 +20,7 @@ public class SupervisorController : ControllerBase
 
     // GET: api/Supervisor/LineAssignments
     [HttpGet("LineAssignments")]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(typeof(IReadOnlyList<SupervisorLineDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<SupervisorLineDto>>> GetLineAssignments()
     {

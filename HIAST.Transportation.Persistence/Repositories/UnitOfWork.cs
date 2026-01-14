@@ -7,7 +7,7 @@ namespace HIAST.Transportation.Persistence.Repositories;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly TransportationDbContext _context;
-    private IEmployeeRepository? _employeeRepository;
+    // private IEmployeeRepository? _employeeRepository; // Removed
     private IDriverRepository? _driverRepository;
     private IBusRepository? _busRepository;
     private IStopRepository? _stopRepository;
@@ -19,8 +19,8 @@ public class UnitOfWork : IUnitOfWork
         _context = context;
     }
 
-    public IEmployeeRepository EmployeeRepository => 
-        _employeeRepository ??= new EmployeeRepository(_context);
+    // public IEmployeeRepository EmployeeRepository => 
+    //    _employeeRepository ??= new EmployeeRepository(_context);
 
     public IDriverRepository DriverRepository => 
         _driverRepository ??= new DriverRepository(_context);
