@@ -62,7 +62,7 @@ public class UserService : IUserService
         {
             user.FirstName = employee.FirstName;
             user.LastName = employee.LastName;
-            user.UserName = employee.UserName; // Assuming we allow username update, otherwise remove this line.
+            user.UserName = employee.UserName; 
             user.PhoneNumber = employee.PhoneNumber;
             user.EmployeeNumber = employee.EmployeeNumber;
             user.Department = employee.Department;
@@ -78,5 +78,11 @@ public class UserService : IUserService
         {
             await _userManager.DeleteAsync(user);
         }
+    }
+
+    public async Task<int> GetEmployeeCountAsync()
+    {
+        var employees = await _userManager.GetUsersInRoleAsync("Employee");
+        return employees.Count;
     }
 }

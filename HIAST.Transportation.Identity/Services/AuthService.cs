@@ -57,6 +57,7 @@ public class AuthService : IAuthService
             Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
             Email = user.Email,
             UserName = user.UserName,
+            EmployeeNumber = user.EmployeeNumber,
             Roles = roles.ToList()
         };
 
