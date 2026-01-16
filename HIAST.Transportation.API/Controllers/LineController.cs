@@ -1,6 +1,7 @@
 using HIAST.Transportation.Application.DTOs.Line;
 using HIAST.Transportation.Application.Features.Line.Commands.CreateLine;
 using HIAST.Transportation.Application.Features.Line.Commands.DeleteLine;
+using HIAST.Transportation.Application.Features.Line.Commands.HandoverSupervisor;
 using HIAST.Transportation.Application.Features.Line.Commands.UpdateLine;
 using HIAST.Transportation.Application.Features.Line.Queries.GetLineDetail;
 using HIAST.Transportation.Application.Features.Line.Queries.GetLineList;
@@ -83,5 +84,19 @@ public class LineController : ControllerBase
         await _mediator.Send(command);
         return NoContent();
     }
-}
 
+    // PUT: api/Line/5/handover
+    [HttpPut("{id}/handover")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> HandoverSupervisor(int id, [FromBody] HandoverSupervisorDto handoverDto)
+    {
+        if (id != handoverDto.LineId)
+            return BadRequest("Line ID mismatch");
+
+        // The CommandHandler should verify permissions (IsCurrentSupervisor)
+        await _mediator.Send(new HandoverSupervisorCommand { HandoverSupervisorDto = handoverDto });
+        return NoContent();
+    }
+}
