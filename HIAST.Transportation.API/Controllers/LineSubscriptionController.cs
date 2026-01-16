@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HIAST.Transportation.API.Controllers;
 
 [Route("api/[controller]")]
-[Authorize(Roles = "Administrator")]
+[Authorize]
 [ApiController]
 public class LineSubscriptionController : ControllerBase
 {
@@ -24,6 +24,7 @@ public class LineSubscriptionController : ControllerBase
 
     // GET: api/LineSubscription
     [HttpGet]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(typeof(List<LineSubscriptionListDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<LineSubscriptionListDto>>> Get()
     {
@@ -31,29 +32,52 @@ public class LineSubscriptionController : ControllerBase
         return Ok(subscriptions);
     }
 
-    // GET: api/LineSubscriptions/5
+    // GET: api/LineSubscription/5
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(LineSubscriptionDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<LineSubscriptionDto>> Get(int id)
     {
         var subscription = await _mediator.Send(new GetLineSubscriptionDetailQuery { Id = id });
+        
+        // Ownership check
+        var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value 
+                         ?? User.FindFirst("uid")?.Value;
+        var isAdmin = User.IsInRole("Administrator");
+
+        if (!isAdmin && subscription.EmployeeId != currentUserId)
+        {
+            return Forbid();
+        }
+
         return Ok(subscription);
     }
 
-    // POST: api/LineSubscriptions
+    // POST: api/LineSubscription
     [HttpPost]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<int>> Post([FromBody] CreateLineSubscriptionDto createDto)
     {
+        // Ownership check
+        var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value 
+                         ?? User.FindFirst("uid")?.Value;
+        var isAdmin = User.IsInRole("Administrator");
+
+        if (!isAdmin && createDto.EmployeeId != currentUserId)
+        {
+            return Forbid();
+        }
+
         var command = new CreateLineSubscriptionCommand { LineSubscriptionDto = createDto };
         var subscriptionId = await _mediator.Send(command);
         return CreatedAtAction(nameof(Get), new { id = subscriptionId }, subscriptionId);
     }
 
-    // PUT: api/LineSubscriptions/5
+    // PUT: api/LineSubscription/5
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -73,8 +97,22 @@ public class LineSubscriptionController : ControllerBase
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Delete(int id)
     {
+        // Fetch to check ownership
+        var subscription = await _mediator.Send(new GetLineSubscriptionDetailQuery { Id = id });
+        
+        var currentUserId = User.FindFirst("uid")?.Value 
+                         ?? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                         ?? User.FindFirst("sub")?.Value;
+        var isAdmin = User.IsInRole("Administrator");
+
+        if (!isAdmin && subscription.EmployeeId != currentUserId)
+        {
+            return Forbid();
+        }
+
         var command = new DeleteLineSubscriptionCommand { Id = id };
         await _mediator.Send(command);
         return NoContent();

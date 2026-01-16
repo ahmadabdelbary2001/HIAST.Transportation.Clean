@@ -24,6 +24,7 @@ public class StopController : ControllerBase
 
     // GET: api/Stops
     [HttpGet]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(typeof(List<StopListDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<StopListDto>>> Get()
     {

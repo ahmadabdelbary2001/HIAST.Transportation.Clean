@@ -20,6 +20,7 @@ public class EmployeeController : ControllerBase
 
     // GET: api/Employee
     [HttpGet]
+    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(typeof(List<HIAST.Transportation.Application.Models.Identity.Employee>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<HIAST.Transportation.Application.Models.Identity.Employee>>> Get()
     {
