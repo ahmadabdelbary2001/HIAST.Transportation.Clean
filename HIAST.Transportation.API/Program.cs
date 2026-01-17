@@ -26,6 +26,7 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<HIAST.Transportation.Application.Contracts.Infrastructure.INotificationService, HIAST.Transportation.API.Services.NotificationService>();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -67,6 +68,9 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// Add SignalR
+builder.Services.AddSignalR();
+
 // Configure CORS
 builder.Services.AddCors(options =>
 {
@@ -78,7 +82,7 @@ builder.Services.AddCors(options =>
             policy.WithOrigins("http://localhost:3000", "http://localhost:5173") 
                 .AllowAnyHeader()
                 .AllowAnyMethod()
-                .AllowCredentials();
+                .AllowCredentials(); // Important for SignalR
         });
 });
 
@@ -115,5 +119,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<HIAST.Transportation.API.Hubs.NotificationHub>("/notificationHub");
 
 app.Run();

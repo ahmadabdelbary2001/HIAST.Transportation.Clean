@@ -13,6 +13,7 @@ public class UnitOfWork : IUnitOfWork
     private IStopRepository? _stopRepository;
     private ILineRepository? _lineRepository;
     private ILineSubscriptionRepository? _lineSubscriptionRepository;
+    private INotificationRepository? _notificationRepository;
 
     public UnitOfWork(TransportationDbContext context)
     {
@@ -36,6 +37,9 @@ public class UnitOfWork : IUnitOfWork
     
     public ILineSubscriptionRepository LineSubscriptionRepository => 
         _lineSubscriptionRepository ??= new LineSubscriptionRepository(_context);
+
+    public INotificationRepository NotificationRepository => 
+        _notificationRepository ??= new NotificationRepository(_context);
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

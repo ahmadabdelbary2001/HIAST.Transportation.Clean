@@ -10,11 +10,13 @@ public class HandoverSupervisorCommandHandler : IRequestHandler<HandoverSupervis
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUserService _userService;
+    private readonly Contracts.Infrastructure.INotificationService _notificationService;
 
-    public HandoverSupervisorCommandHandler(IUnitOfWork unitOfWork, IUserService userService)
+    public HandoverSupervisorCommandHandler(IUnitOfWork unitOfWork, IUserService userService, Contracts.Infrastructure.INotificationService notificationService)
     {
         _unitOfWork = unitOfWork;
         _userService = userService;
+        _notificationService = notificationService;
     }
 
     public async Task Handle(HandoverSupervisorCommand request, CancellationToken cancellationToken)
@@ -39,6 +41,12 @@ public class HandoverSupervisorCommandHandler : IRequestHandler<HandoverSupervis
         if (newSupervisorSubscription == null)
             throw new BadRequestException("Selected new supervisor is not an active subscriber of this line.");
 
+        // Fetch names for notification
+        var oldSupervisor = await _userService.GetEmployee(currentUserId);
+        var newSupervisor = await _userService.GetEmployee(request.HandoverSupervisorDto.NewSupervisorId);
+        var oldSupervisorName = oldSupervisor != null ? $"{oldSupervisor.FirstName} {oldSupervisor.LastName}" : "Unknown";
+        var newSupervisorName = newSupervisor != null ? $"{newSupervisor.FirstName} {newSupervisor.LastName}" : "Unknown";
+
         // 5. Update Supervisor
         line.SupervisorId = request.HandoverSupervisorDto.NewSupervisorId;
         await _unitOfWork.LineRepository.UpdateAsync(line);
@@ -46,7 +54,56 @@ public class HandoverSupervisorCommandHandler : IRequestHandler<HandoverSupervis
         // Save changes to update the line
         await _unitOfWork.SaveChangesAsync();
 
-        // 6. Find and Delete Old Supervisor's Subscription
+        // 6. Notifications
+        var notificationTitle = "Supervisor Handover";
+        var notificationMessage = $"Supervisor handover for line '{line.Name}': {oldSupervisorName} -> {newSupervisorName}.";
+        var adminData = System.Text.Json.JsonSerializer.Serialize(new 
+        { 
+            lineName = line.Name, 
+            oldSupervisor = oldSupervisorName,
+            newSupervisor = newSupervisorName 
+        });
+
+        // Notify Admins (Rule: If Supervisor handovers, notify Admins)
+        var adminIds = await _userService.GetAdminUserIdsAsync();
+        foreach (var adminId in adminIds)
+        {
+             await _notificationService.SendNotificationAsync(
+                adminId,
+                notificationTitle,
+                notificationMessage,
+                line.Id.ToString(),
+                "SupervisorHandover",
+                "notifications.supervisorHandover.title",
+                "notifications.supervisorHandover.message",
+                adminData
+            );
+        }
+
+        // Notify Subscribers (Implicit Rule: Subscribers should know)
+        // Filter out the old supervisor (who is leaving) and maybe active subscribers
+        var activeSubscribers = subscriptions.Where(s => s.IsActive && s.EmployeeUserId != currentUserId).ToList();
+        var subscriberData = System.Text.Json.JsonSerializer.Serialize(new 
+        { 
+            lineName = line.Name, 
+            newSupervisor = newSupervisorName 
+        });
+        
+        foreach (var sub in activeSubscribers)
+        {
+            await _notificationService.SendNotificationAsync(
+                sub.EmployeeUserId, 
+                "Supervisor Changed", 
+                $"The supervisor for line '{line.Name}' has been changed to '{newSupervisorName}'.",
+                line.Id.ToString(), 
+                "SupervisorChange",
+                "notifications.supervisorChanged.title",
+                "notifications.supervisorChanged.message",
+                subscriberData
+            );
+        }
+
+        // 7. Find and Delete Old Supervisor's Subscription
         var oldSupervisorSubscriptionId = subscriptions
             .FirstOrDefault(s => s.EmployeeUserId == currentUserId && s.IsActive)?.Id;
         

@@ -15,11 +15,12 @@ public class TransportationDbContext : DbContext
     }
 
     // public DbSet<Employee> Employees => Set<Employee>(); // Removed
-    public DbSet<Driver> Drivers => Set<Driver>();
-    public DbSet<Bus> Buses => Set<Bus>();
-    public DbSet<Stop> Stops => Set<Stop>();
-    public DbSet<Line> Lines => Set<Line>();
-    public DbSet<LineSubscription> LineSubscriptions => Set<LineSubscription>();
+    public DbSet<Driver> Drivers { get; set; }
+    public DbSet<Bus> Buses { get; set; }
+    public DbSet<Stop> Stops { get; set; }
+    public DbSet<Line> Lines { get; set; }
+    public DbSet<LineSubscription> LineSubscriptions { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

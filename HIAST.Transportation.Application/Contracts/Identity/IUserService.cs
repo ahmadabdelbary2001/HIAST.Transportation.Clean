@@ -9,5 +9,6 @@ public interface IUserService
     Task UpdateEmployee(Employee employee);
     Task DeleteEmployee(string userId);
     Task<int> GetEmployeeCountAsync();
+    Task<List<string>> GetAdminUserIdsAsync();
     public string UserId { get; }
 }

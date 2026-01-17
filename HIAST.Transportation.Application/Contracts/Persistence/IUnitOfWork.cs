@@ -11,6 +11,7 @@ public interface IUnitOfWork : IDisposable
     IStopRepository StopRepository { get; }
     ILineRepository LineRepository { get; }
     ILineSubscriptionRepository LineSubscriptionRepository { get; }
+    INotificationRepository NotificationRepository { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken =  default);
     Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);

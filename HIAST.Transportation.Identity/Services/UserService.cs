@@ -85,4 +85,10 @@ public class UserService : IUserService
         var employees = await _userManager.GetUsersInRoleAsync("Employee");
         return employees.Count;
     }
+
+    public async Task<List<string>> GetAdminUserIdsAsync()
+    {
+        var admins = await _userManager.GetUsersInRoleAsync("Administrator");
+        return admins.Select(u => u.Id).ToList();
+    }
 }

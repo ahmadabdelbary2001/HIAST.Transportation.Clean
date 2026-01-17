@@ -4,20 +4,25 @@ using HIAST.Transportation.Application.Contracts.Logging;
 using HIAST.Transportation.Application.DTOs.Line.Validators;
 using HIAST.Transportation.Application.Exceptions;
 using MediatR;
+using HIAST.Transportation.Application.Contracts.Identity;
 
 namespace HIAST.Transportation.Application.Features.Line.Commands.UpdateLine;
 
 public class UpdateLineCommandHandler : IRequestHandler<UpdateLineCommand, Unit>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IUserService _userService;
     private readonly IMapper _mapper;
     private readonly IAppLogger<UpdateLineCommandHandler> _logger;
+    private readonly Contracts.Infrastructure.INotificationService _notificationService;
 
-    public UpdateLineCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IAppLogger<UpdateLineCommandHandler> logger)
+    public UpdateLineCommandHandler(IUnitOfWork unitOfWork, IUserService userService, IMapper mapper, IAppLogger<UpdateLineCommandHandler> logger, Contracts.Infrastructure.INotificationService notificationService)
     {
         _unitOfWork = unitOfWork;
+        _userService = userService;
         _mapper = mapper;
         _logger = logger;
+        _notificationService = notificationService;
     }
 
     public async Task<Unit> Handle(UpdateLineCommand request, CancellationToken cancellationToken)
@@ -65,6 +70,37 @@ public class UpdateLineCommandHandler : IRequestHandler<UpdateLineCommand, Unit>
         {
             // Deactivate old supervisor's subscription
             var activeSubscriptions = await _unitOfWork.LineSubscriptionRepository.GetSubscriptionsByLineIdAsync(line.Id);
+            
+            // Notify active subscribers about supervisor change (Rule: If Admin changes, notify subscribers)
+            var activeSubscribers = activeSubscriptions.Where(s => s.IsActive && s.EmployeeUserId != line.SupervisorId).ToList();
+            if (activeSubscribers.Any())
+            {
+                var newSupervisor = await _userService.GetEmployee(request.LineDto.SupervisorId);
+                var newSupervisorName = newSupervisor != null ? $"{newSupervisor.FirstName} {newSupervisor.LastName}" : "Unknown";
+
+                var notificationTitle = "Supervisor Changed";
+                var notificationMessage = $"The supervisor for line '{line.Name}' has been changed to '{newSupervisorName}'.";
+                var notificationData = System.Text.Json.JsonSerializer.Serialize(new 
+                { 
+                    lineName = line.Name, 
+                    newSupervisor = newSupervisorName 
+                });
+                
+                foreach (var subscriber in activeSubscribers)
+                {
+                    await _notificationService.SendNotificationAsync(
+                        subscriber.EmployeeUserId, 
+                        notificationTitle, 
+                        notificationMessage, 
+                        line.Id.ToString(), 
+                        "SupervisorChange",
+                        "notifications.supervisorChanged.title",
+                        "notifications.supervisorChanged.message",
+                        notificationData
+                    );
+                }
+            }
+
             var oldSubscription = activeSubscriptions.FirstOrDefault(s => s.EmployeeUserId == line.SupervisorId && s.IsActive);
             
             if (oldSubscription != null)
