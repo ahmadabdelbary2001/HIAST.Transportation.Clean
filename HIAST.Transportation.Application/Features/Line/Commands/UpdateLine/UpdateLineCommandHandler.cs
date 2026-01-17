@@ -68,21 +68,56 @@ public class UpdateLineCommandHandler : IRequestHandler<UpdateLineCommand, Unit>
         // Handle Supervisor Change
         if (line.SupervisorId != request.LineDto.SupervisorId)
         {
+
             // Deactivate old supervisor's subscription
             var activeSubscriptions = await _unitOfWork.LineSubscriptionRepository.GetSubscriptionsByLineIdAsync(line.Id);
             
+            var oldSupervisor = await _userService.GetEmployee(line.SupervisorId);
+            var newSupervisor = await _userService.GetEmployee(request.LineDto.SupervisorId);
+            var currentAdmin = await _userService.GetEmployee(_userService.UserId); // Get current user (Admin)
+
+            var oldSupervisorName = oldSupervisor != null ? $"{oldSupervisor.FirstName} {oldSupervisor.LastName}" : "Unknown";
+            var newSupervisorName = newSupervisor != null ? $"{newSupervisor.FirstName} {newSupervisor.LastName}" : "Unknown";
+            
+            // Should stay efficient for Fallback Message
+            var adminName = currentAdmin != null ? $"{currentAdmin.FirstName} {currentAdmin.LastName}" : "System Administrator";
+            // Key for Frontend Localization
+            var adminNameKey = currentAdmin != null ? adminName : "systemAdmin";
+
+             // Notify New Supervisor (You have been assigned by Admin)
+            var newSupervisorNotificationData = System.Text.Json.JsonSerializer.Serialize(new 
+            { 
+                lineName = line.Name, 
+                adminName = adminNameKey 
+            });
+
+            await _notificationService.SendNotificationAsync(
+                request.LineDto.SupervisorId, 
+                "New Responsibility", 
+                $"You have been assigned as supervisor for line '{line.Name}' by {adminName}.", 
+                line.Id.ToString(), 
+                "SupervisorAssignment", 
+                "notifications.adminAssignedSupervisor.title", 
+                "notifications.adminAssignedSupervisor.message", 
+                newSupervisorNotificationData
+            );
+
             // Notify active subscribers about supervisor change (Rule: If Admin changes, notify subscribers)
-            var activeSubscribers = activeSubscriptions.Where(s => s.IsActive && s.EmployeeUserId != line.SupervisorId).ToList();
+            // Filter out: 
+            // 1. The old supervisor (line.SupervisorId) - handled by 'deactivate' logic, triggers separate flow if needed.
+            // 2. The NEW supervisor (request.LineDto.SupervisorId) - because they just got a specific "You have been assigned" notification.
+            var activeSubscribers = activeSubscriptions
+                .Where(s => s.IsActive && s.EmployeeUserId != line.SupervisorId && s.EmployeeUserId != request.LineDto.SupervisorId)
+                .ToList();
+
             if (activeSubscribers.Any())
             {
-                var newSupervisor = await _userService.GetEmployee(request.LineDto.SupervisorId);
-                var newSupervisorName = newSupervisor != null ? $"{newSupervisor.FirstName} {newSupervisor.LastName}" : "Unknown";
-
                 var notificationTitle = "Supervisor Changed";
-                var notificationMessage = $"The supervisor for line '{line.Name}' has been changed to '{newSupervisorName}'.";
+                var notificationMessage = $"The supervisor for line '{line.Name}' has changed from {oldSupervisorName} to {newSupervisorName}.";
                 var notificationData = System.Text.Json.JsonSerializer.Serialize(new 
                 { 
                     lineName = line.Name, 
+                    oldSupervisor = oldSupervisorName,
                     newSupervisor = newSupervisorName 
                 });
                 
@@ -94,8 +129,8 @@ public class UpdateLineCommandHandler : IRequestHandler<UpdateLineCommand, Unit>
                         notificationMessage, 
                         line.Id.ToString(), 
                         "SupervisorChange",
-                        "notifications.supervisorChanged.title",
-                        "notifications.supervisorChanged.message",
+                        "notifications.supervisorChangedDetailed.title",
+                        "notifications.supervisorChangedDetailed.message",
                         notificationData
                     );
                 }
@@ -114,14 +149,38 @@ public class UpdateLineCommandHandler : IRequestHandler<UpdateLineCommand, Unit>
                 }
             }
 
-            // Create subscription for new supervisor
-            await _unitOfWork.LineSubscriptionRepository.CreateAsync(new Domain.Entities.LineSubscription
+            // Check if new supervisor already has a subscription, providing resilience if they weren't subscribed
+            var existingNewSupervisorSub = activeSubscriptions.FirstOrDefault(s => s.EmployeeUserId == request.LineDto.SupervisorId);
+
+            if (existingNewSupervisorSub != null)
             {
-                LineId = line.Id,
-                EmployeeUserId = request.LineDto.SupervisorId,
-                StartDate = DateTime.UtcNow,
-                IsActive = true
-            });
+                 // If they have an inactive one, reactivate it? Or if active, ensure it is set correctly? 
+                 // For now, logic assumes if they are not the supervisor, they might be a subscriber.
+                 // Ideally, we ensure they have an ACTIVE subscription.
+                 if(!existingNewSupervisorSub.IsActive)
+                 {
+                    var subToActivate = await _unitOfWork.LineSubscriptionRepository.GetByIdAsync(existingNewSupervisorSub.Id);
+                     if (subToActivate != null)
+                     {
+                        subToActivate.IsActive = true;
+                        subToActivate.StartDate = DateTime.UtcNow; // Reset start date? or keep history?
+                        subToActivate.EndDate = null;
+                        await _unitOfWork.LineSubscriptionRepository.UpdateAsync(subToActivate);
+                     }
+                 }
+                 // If already active, do nothing.
+            }
+            else 
+            {
+                // Create subscription for new supervisor if none exists
+                await _unitOfWork.LineSubscriptionRepository.CreateAsync(new Domain.Entities.LineSubscription
+                {
+                    LineId = line.Id,
+                    EmployeeUserId = request.LineDto.SupervisorId,
+                    StartDate = DateTime.UtcNow,
+                    IsActive = true
+                });
+            }
         }
 
         _logger.LogInformation("Updating line with ID: {LineId}", line.Id);

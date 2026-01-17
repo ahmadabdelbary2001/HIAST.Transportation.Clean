@@ -80,12 +80,37 @@ public class HandoverSupervisorCommandHandler : IRequestHandler<HandoverSupervis
             );
         }
 
+
+        // Notify New Supervisor (You have been assigned by peer)
+        var newSupervisorNotificationData = System.Text.Json.JsonSerializer.Serialize(new 
+        { 
+            lineName = line.Name, 
+            oldSupervisor = oldSupervisorName 
+        });
+
+        await _notificationService.SendNotificationAsync(
+            request.HandoverSupervisorDto.NewSupervisorId, 
+            "New Responsibility", 
+            $"You have been assigned as supervisor for line '{line.Name}' by {oldSupervisorName}.", 
+            line.Id.ToString(), 
+            "SupervisorAssignment", 
+            "notifications.peerAssignedSupervisor.title", 
+            "notifications.peerAssignedSupervisor.message", 
+            newSupervisorNotificationData
+        );
+
         // Notify Subscribers (Implicit Rule: Subscribers should know)
-        // Filter out the old supervisor (who is leaving) and maybe active subscribers
-        var activeSubscribers = subscriptions.Where(s => s.IsActive && s.EmployeeUserId != currentUserId).ToList();
+        // Filter out:
+        // 1. The old supervisor (currentUserId) - who initiated the action.
+        // 2. The NEW supervisor (request.HandoverSupervisorDto.NewSupervisorId) - who gets the specific assignment notification.
+        var activeSubscribers = subscriptions
+            .Where(s => s.IsActive && s.EmployeeUserId != currentUserId && s.EmployeeUserId != request.HandoverSupervisorDto.NewSupervisorId)
+            .ToList();
+
         var subscriberData = System.Text.Json.JsonSerializer.Serialize(new 
         { 
             lineName = line.Name, 
+            oldSupervisor = oldSupervisorName,
             newSupervisor = newSupervisorName 
         });
         
@@ -94,11 +119,11 @@ public class HandoverSupervisorCommandHandler : IRequestHandler<HandoverSupervis
             await _notificationService.SendNotificationAsync(
                 sub.EmployeeUserId, 
                 "Supervisor Changed", 
-                $"The supervisor for line '{line.Name}' has been changed to '{newSupervisorName}'.",
+                $"The supervisor for line '{line.Name}' has changed from {oldSupervisorName} to {newSupervisorName}.",
                 line.Id.ToString(), 
                 "SupervisorChange",
-                "notifications.supervisorChanged.title",
-                "notifications.supervisorChanged.message",
+                "notifications.supervisorChangedDetailed.title",
+                "notifications.supervisorChangedDetailed.message",
                 subscriberData
             );
         }
