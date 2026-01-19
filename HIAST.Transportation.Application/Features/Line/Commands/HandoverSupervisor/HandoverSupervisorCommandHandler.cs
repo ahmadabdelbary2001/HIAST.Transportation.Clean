@@ -27,10 +27,11 @@ public class HandoverSupervisorCommandHandler : IRequestHandler<HandoverSupervis
             throw new NotFoundException(nameof(Domain.Entities.Line), request.HandoverSupervisorDto.LineId);
 
         var currentUserId = _userService.UserId;
+        var isAdmin = await _userService.IsInRoleAsync(currentUserId, "Administrator");
 
-        // 2. Verify Current Supervisor
-        if (line.SupervisorId != currentUserId)
-            throw new BadRequestException("Only the current supervisor can handover the line.");
+        // 2. Verify Current Supervisor or Administrator
+        if (line.SupervisorId != currentUserId && !isAdmin)
+            throw new BadRequestException("Only the current supervisor or an administrator can handover the line.");
 
         // 3. Get subscriptions WITHOUT including Line navigation (to avoid tracking conflict)
         var subscriptions = await _unitOfWork.LineSubscriptionRepository.GetSubscriptionsByLineIdAsync(line.Id);

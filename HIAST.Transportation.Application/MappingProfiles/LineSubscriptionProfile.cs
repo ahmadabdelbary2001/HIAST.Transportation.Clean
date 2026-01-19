@@ -14,6 +14,8 @@ public class LineSubscriptionProfile : Profile
             .ForMember(dest => dest.LineName, opt => opt.MapFrom(src => src.Line.Name));
             
         CreateMap<LineSubscription, LineSubscriptionListDto>()
+            .ForMember(dest => dest.EmployeeId, opt => opt.MapFrom(src => src.EmployeeUserId))
+            .ForMember(dest => dest.LineId, opt => opt.MapFrom(src => src.LineId))
             .ForMember(dest => dest.LineName, opt => opt.MapFrom(src => src.Line.Name));
 
         // Maps for writing data

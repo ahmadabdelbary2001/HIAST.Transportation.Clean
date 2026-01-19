@@ -10,5 +10,6 @@ public interface IUserService
     Task DeleteEmployee(string userId);
     Task<int> GetEmployeeCountAsync();
     Task<List<string>> GetAdminUserIdsAsync();
+    Task<bool> IsInRoleAsync(string userId, string roleName);
     public string UserId { get; }
 }

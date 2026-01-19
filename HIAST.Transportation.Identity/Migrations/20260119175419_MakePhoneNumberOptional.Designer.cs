@@ -4,6 +4,7 @@ using HIAST.Transportation.Identity.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HIAST.Transportation.Identity.Migrations
 {
     [DbContext(typeof(HIASTTransportationIdentityDbContext))]
-    partial class HIASTTransportationIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260119175419_MakePhoneNumberOptional")]
+    partial class MakePhoneNumberOptional
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
