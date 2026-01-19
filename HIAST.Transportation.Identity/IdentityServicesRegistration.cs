@@ -21,6 +21,9 @@ public static class IdentityServicesRegistration
         IConfiguration configuration)
     {
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+        services.Configure<LdapSettings>(configuration.GetSection("LdapSettings"));
+
+        services.AddTransient<ILdapService, LdapService>();
 
         services.AddDbContext<HIASTTransportationIdentityDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("TransportationConnectionString"))
