@@ -10,6 +10,7 @@ public class LineDto
     public string SupervisorName { get; set; } = string.Empty;
     public int BusId { get; set; }
     public string BusLicensePlate { get; set; } = string.Empty;
+    public int BusCapacity { get; set; }
     public int DriverId { get; set; }
     public string DriverName { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;

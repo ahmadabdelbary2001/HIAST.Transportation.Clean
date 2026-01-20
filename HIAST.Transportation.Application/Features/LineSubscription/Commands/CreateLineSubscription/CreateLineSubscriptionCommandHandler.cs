@@ -1,6 +1,7 @@
 using AutoMapper;
 using HIAST.Transportation.Application.Contracts.Persistence;
 using HIAST.Transportation.Application.Contracts.Logging;
+using HIAST.Transportation.Application.Contracts.Identity;
 using HIAST.Transportation.Application.DTOs.LineSubscription.Validators;
 using HIAST.Transportation.Application.Exceptions;
 using MediatR;
@@ -12,12 +13,21 @@ public class CreateLineSubscriptionCommandHandler : IRequestHandler<CreateLineSu
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IAppLogger<CreateLineSubscriptionCommandHandler> _logger;
+    private readonly Contracts.Infrastructure.INotificationService _notificationService;
+    private readonly IUserService _userService;
 
-    public CreateLineSubscriptionCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IAppLogger<CreateLineSubscriptionCommandHandler> logger)
+    public CreateLineSubscriptionCommandHandler(
+        IUnitOfWork unitOfWork, 
+        IMapper mapper, 
+        IAppLogger<CreateLineSubscriptionCommandHandler> logger,
+        Contracts.Infrastructure.INotificationService notificationService,
+        IUserService userService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _logger = logger;
+        _notificationService = notificationService;
+        _userService = userService;
     }
 
     public async Task<int> Handle(CreateLineSubscriptionCommand request, CancellationToken cancellationToken)
@@ -47,6 +57,35 @@ public class CreateLineSubscriptionCommandHandler : IRequestHandler<CreateLineSu
         {
             _logger.LogWarning("Capacity reached for line {LineId}. Bus {BusId} capacity is {Capacity}.", 
                 lineWithDetails.Id, lineWithDetails.BusId, lineWithDetails.Bus.Capacity);
+
+            // Get employee details for notification
+            var employee = await _userService.GetEmployee(request.LineSubscriptionDto.EmployeeId);
+            var employeeName = employee != null ? $"{employee.FirstName} {employee.LastName}" : "Unknown";
+
+            // Notify all administrators
+            var adminIds = await _userService.GetAdminUserIdsAsync();
+            var notificationData = System.Text.Json.JsonSerializer.Serialize(new
+            {
+                employeeName = employeeName,
+                lineName = lineWithDetails.Name,
+                busLicensePlate = lineWithDetails.Bus.LicensePlate,
+                capacity = lineWithDetails.Bus.Capacity
+            });
+
+            foreach (var adminId in adminIds)
+            {
+                await _notificationService.SendNotificationAsync(
+                    adminId,
+                    "Bus Capacity Reached",
+                    $"Employee {employeeName} attempted to subscribe to line {lineWithDetails.Name}, but bus {lineWithDetails.Bus.LicensePlate} is full ({lineWithDetails.Bus.Capacity} seats)",
+                    lineWithDetails.Id.ToString(),
+                    "BusFull",
+                    "notifications.busFull.title",
+                    "notifications.busFull.message",
+                    notificationData
+                );
+            }
+
             throw new BadRequestException("The bus for this line has reached its maximum capacity.");
         }
 

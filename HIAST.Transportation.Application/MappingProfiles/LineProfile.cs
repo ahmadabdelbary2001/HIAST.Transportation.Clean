@@ -10,7 +10,8 @@ public class LineProfile : Profile
     {
         // Maps for reading data
         CreateMap<Line, LineDto>()
-            .ForMember(dest => dest.Subscriptions, opt => opt.MapFrom(src => src.LineSubscriptions));
+            .ForMember(dest => dest.Subscriptions, opt => opt.MapFrom(src => src.LineSubscriptions))
+            .ForMember(dest => dest.BusCapacity, opt => opt.MapFrom(src => src.Bus.Capacity));
 
         CreateMap<Line, LineListDto>();
         

@@ -14,8 +14,8 @@ public class UpdateBusDtoValidator : AbstractValidator<UpdateBusDto>
             .MaximumLength(20).WithMessage("{PropertyName} must not exceed 20 characters");
 
         RuleFor(x => x.Capacity)
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0")
-            .LessThanOrEqualTo(100).WithMessage("{PropertyName} must not exceed 100");
+            .GreaterThanOrEqualTo(12).WithMessage("Bus capacity must be at least 12 seats")
+            .LessThanOrEqualTo(36).WithMessage("Bus capacity must not exceed 36 seats");
 
         RuleFor(x => x.Status)
             .IsInEnum().WithMessage("{PropertyName} must be a valid bus status");
